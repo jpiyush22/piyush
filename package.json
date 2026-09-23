@@ -1,0 +1,13 @@
+{
+  "name": "jobsearch",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Germany marketing job search & application tooling",
+  "scripts": {
+    "resume": "node make_resume.js",
+    "cover-letter": "node make_cover_letter.js"
+  },
+  "dependencies": {
+    "docx": "^9.1.0"
+  }
+}

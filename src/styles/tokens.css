@@ -1,0 +1,65 @@
+/*
+ * Design tokens from the Superchat brand reference (docs/brand-guide.md).
+ * Primary blue, light blue and dark navy are the brand reference colors; the
+ * neutrals, radii and 8px spacing are the guide's recommended implementation
+ * values. Pangea isn't licensed here, so headings use Figtree at heavier
+ * weights, as the guide specifies.
+ */
+:root {
+  /* Brand reference colors */
+  --brand: #145fd9;
+  --brand-strong: #0f4fb8;
+  --brand-light: #99d5ef;
+  --navy: #0d2b4d;
+  --navy-2: #163a63;
+
+  /* Tints derived from the brand colors for fills and focus states */
+  --brand-soft: #e8f0fc;
+  --brand-softer: #f2f7fe;
+  --light-soft: #eaf6fc;
+
+  /* Recommended neutrals */
+  --surface: #ffffff;
+  --bg: #f7f9fc;
+  --surface-2: #f7f9fc;
+  --surface-3: #eef2f7;
+  --line: #e5eaf0;
+  --line-strong: #d3dbe5;
+  --ink: #111827;
+  --heading: #0d2b4d;
+  --ink-2: #475569;
+  --ink-3: #64748b;
+
+  /* Status: always paired with a text label, never color alone */
+  --risk: #b42318;
+  --risk-soft: #fef3f2;
+  --watch: #b54708;
+  --watch-soft: #fffaeb;
+  --ok: #067647;
+  --ok-soft: #ecfdf3;
+  --unknown: #475569;
+  --unknown-soft: #f1f5f9;
+
+  /* Chart series */
+  --ssf: #145fd9;
+  --sales: #0d2b4d;
+  --muted-line: #94a3b8;
+
+  --rail: #0d2b4d;
+  --rail-2: #163a63;
+  --rail-ink: #b9cbe0;
+
+  --shadow-sm: 0 1px 2px rgba(13, 43, 77, 0.05);
+  --shadow: 0 1px 2px rgba(13, 43, 77, 0.04), 0 8px 24px -12px rgba(13, 43, 77, 0.14);
+  --shadow-lg: 0 24px 56px -24px rgba(13, 43, 77, 0.4);
+
+  --radius-sm: 8px;
+  --radius-btn: 10px;
+  --radius: 16px;
+  --radius-lg: 24px;
+
+  --font-heading: 'Figtree', 'Inter', Arial, sans-serif;
+  --font: 'Figtree', 'Inter', Arial, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color-scheme: light;
+}

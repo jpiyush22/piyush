@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { BrandLogo, BrandMark, Icon } from './components/ui';
+import { BrandLogo, Icon } from './components/ui';
 import { SECTIONS, type SectionId } from './sections/registry';
 import Overview from './sections/Overview';
 import S1Funnel from './sections/S1Funnel';
@@ -61,25 +61,6 @@ export default function App() {
 
   return (
     <div className={`app ${navOpen ? 'nav-open' : ''}`}>
-      <aside className="rail" aria-label="App">
-        <div className="rail-logo">
-          <BrandMark />
-        </div>
-        {SECTIONS.map((s) => (
-          <button key={s.id} className="rail-btn" aria-current={current === s.id ? 'page' : undefined} onClick={() => go(s.id)} aria-label={s.title}>
-            <Icon name={s.icon} />
-            <span className="tip">
-              {s.id === 'overview' ? '' : `${s.num}. `}
-              {s.title}
-            </span>
-          </button>
-        ))}
-        <div className="rail-spacer" />
-        <div className="rail-avatar" title="Piyush Jain">
-          <img src="piyush.jpg" alt="Piyush Jain" />
-        </div>
-      </aside>
-
       <div className="scrim" onClick={() => setNavOpen(false)} />
 
       <nav className="nav" aria-label="Sections">
@@ -99,15 +80,17 @@ export default function App() {
           </label>
         </div>
         <div className="nav-list">
-          <div className="nav-group">Inbox · {filtered.length}</div>
           {filtered.map((s) => (
             <button key={s.id} className="nav-item" aria-current={current === s.id ? 'page' : undefined} onClick={() => go(s.id)}>
-              <span className="avatar" style={{ background: s.color }}>
-                {s.num}
+              <span className="nav-icon">
+                <Icon name={s.icon} size={18} />
               </span>
               <span className="meta">
                 <span className="row">
-                  <span className="name">{s.title}</span>
+                  <span className="name">
+                    {s.id !== 'overview' && <span className="num">{s.num}</span>}
+                    {s.title}
+                  </span>
                   {s.tag && <span className="tag">{s.tag}</span>}
                 </span>
                 <span className="preview" style={{ display: 'block' }}>
@@ -118,8 +101,8 @@ export default function App() {
           ))}
           <div className="nav-group">Downloads</div>
           <a className="nav-item" href="files/RevOps_Take-Home_Piyush_Jain_answers.docx" download>
-            <span className="avatar" style={{ background: '#0d2b4d' }}>
-              <Icon name="download" size={16} />
+            <span className="nav-icon">
+              <Icon name="download" size={18} />
             </span>
             <span className="meta">
               <span className="name" style={{ color: 'var(--ink)' }}>Written answers</span>
@@ -127,8 +110,8 @@ export default function App() {
             </span>
           </a>
           <a className="nav-item" href="files/RevOps_Take-Home_Piyush_Jain_workings.xlsx" download>
-            <span className="avatar" style={{ background: '#0d2b4d' }}>
-              <Icon name="download" size={16} />
+            <span className="nav-icon">
+              <Icon name="download" size={18} />
             </span>
             <span className="meta">
               <span className="name" style={{ color: 'var(--ink)' }}>Workings + calculations</span>

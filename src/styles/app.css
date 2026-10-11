@@ -76,7 +76,7 @@ button {
 
 .app {
   display: grid;
-  grid-template-columns: 72px 288px minmax(0, 1fr);
+  grid-template-columns: 300px minmax(0, 1fr);
   min-height: 100%;
   align-items: start;
 }
@@ -1611,4 +1611,33 @@ details.more > div {
 }
 .nav-profile .nav-sub {
   margin-top: 0;
+}
+
+/* Unified sidebar: section icon + title in one menu */
+.nav-list {
+  padding-top: 12px;
+}
+.nav-icon {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: var(--surface-3);
+  color: var(--heading);
+  transition: background 0.12s, color 0.12s;
+}
+.nav-item[aria-current='page'] .nav-icon {
+  background: var(--brand);
+  color: #fff;
+}
+.nav-item .name .num {
+  color: var(--brand);
+  font-weight: 700;
+  margin-right: 6px;
+}
+.nav-item a,
+a.nav-item:hover {
+  text-decoration: none;
 }

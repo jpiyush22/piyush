@@ -27,7 +27,7 @@ The sidebar's Documents links open the written answers (Google Doc) and workings
 npm install
 npm run dev        # local dev server
 npm test           # 66 unit tests (Vitest) for the domain logic
-npm run test:e2e   # 12 browser journeys (Playwright, Chromium)
+npm run test:e2e   # 13 browser journeys (Playwright, Chromium)
 npm run build      # type check + static build in dist/
 ```
 

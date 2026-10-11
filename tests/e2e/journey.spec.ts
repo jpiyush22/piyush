@@ -283,3 +283,14 @@ test('sidebar Documents link to the Google Doc and Sheet in a new tab', async ({
   await expect(doc).toHaveAttribute('target', '_blank');
   await expect(page.getByText('Downloads', { exact: true })).toHaveCount(0);
 });
+
+test('profile card with LinkedIn link appears at the bottom of every page', async ({ page }) => {
+  for (const id of ['overview', 's4', 's9']) {
+    await page.goto(`/#${id}`);
+    const card = page.getByTestId('profile-card');
+    await expect(card).toContainText('Piyush Jain');
+    await expect(card).toContainText('Revenue Operations Engineer | AI & Automation');
+    await expect(card.getByRole('link', { name: /View LinkedIn profile/ })).toHaveAttribute('href', 'https://www.linkedin.com/in/jpiyush12/');
+  }
+  await expect(page.locator('a.nav-profile')).toHaveAttribute('href', 'https://www.linkedin.com/in/jpiyush12/');
+});

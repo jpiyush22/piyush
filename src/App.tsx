@@ -1,6 +1,12 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { BrandMark, Icon } from './components/ui';
 import Walkthrough from './components/Walkthrough';
+
+const PROFILE = {
+  name: 'Piyush Jain',
+  headline: 'Revenue Operations Engineer | AI & Automation',
+  linkedin: 'https://www.linkedin.com/in/jpiyush12/',
+};
 import { SECTIONS, type SectionId } from './sections/registry';
 import Overview from './sections/Overview';
 import S1Funnel from './sections/S1Funnel';
@@ -80,13 +86,13 @@ export default function App() {
               <div className="nav-sub">Prepared for Superchat</div>
             </div>
           </div>
-          <div className="nav-profile">
-            <img src="piyush.jpg" alt="Piyush Jain" />
+          <a className="nav-profile" href={PROFILE.linkedin} target="_blank" rel="noreferrer" title="Open LinkedIn profile">
+            <img src="piyush.jpg" alt={PROFILE.name} />
             <div>
-              <div className="nav-profile-name">Piyush Jain</div>
-              <div className="nav-sub">RevOps Engineer candidate</div>
+              <div className="nav-profile-name">{PROFILE.name}</div>
+              <div className="nav-sub">View LinkedIn profile ↗</div>
             </div>
-          </div>
+          </a>
           <label className="nav-search">
             <Icon name="search" size={16} />
             <input placeholder="Search sections" value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Search sections" />
@@ -180,7 +186,19 @@ export default function App() {
               </button>
             )}
           </div>
-          <p className="tiny muted" style={{ marginTop: 32, textAlign: 'center' }}>
+          <section className="profile-card" aria-label="About the candidate" data-testid="profile-card">
+            <img src="piyush.jpg" alt={PROFILE.name} />
+            <div className="profile-meta">
+              <div className="eyebrow">Prepared by</div>
+              <div className="profile-name">{PROFILE.name}</div>
+              <div className="profile-headline">{PROFILE.headline}</div>
+              <div className="profile-sub">RevOps Engineer take-home for Superchat</div>
+            </div>
+            <a className="btn primary" href={PROFILE.linkedin} target="_blank" rel="noreferrer">
+              View LinkedIn profile <Icon name="external" size={16} />
+            </a>
+          </section>
+          <p className="tiny muted" style={{ marginTop: 20, textAlign: 'center' }}>
             Take-home submission by Piyush Jain for the Superchat RevOps Engineer role. Not an official Superchat product.
           </p>
         </div>

@@ -1,6 +1,6 @@
 # Demo guide (3–5 minutes)
 
-An optional live walkthrough of the app. It is **not** the required 1–3 minute Section 8 video, which is recorded separately.
+An optional live walkthrough of the app. It is separate from the recorded Section 8 walkthrough videos embedded in the app.
 
 **Before you start:** open https://jpiyush22.github.io/piyush/ (or `npm run dev`). If you've clicked around before, go to Signal Desk and press **Reset demo state**. Press **Guided demo** in the top bar to have the app navigate and highlight each step for you.
 

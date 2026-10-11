@@ -45,6 +45,6 @@ Status key: **Implemented** = works in the app · **Simulated** = works against 
 | 7 | Day-90 gates shown as proposed; measured from session where possible | Partial (2 of 4 gates need pilot data) | E Step 8 |
 | 7 | MVP vs mature distinction | Implemented | Manual |
 | 8 | Guided walkthrough across all nine topics | Implemented | E guided demo |
-| 8 | Video | Missing (recorded by the candidate; placeholder plus `VIDEO_URL`) | — |
+| 8 | Video | Implemented: two Loom recordings embedded (recorded by the candidate) | E guided demo / manual |
 | 9 | Feedback preserved (~15 h) | Implemented | Manual |
 | All | Provenance labels; shared state; persistence + reset | Implemented | E persistence |

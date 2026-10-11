@@ -1,10 +1,13 @@
 import { Answer, Callout, Card, Icon, Pill, QA, SectionHero } from '../components/ui';
 
 /**
- * Paste the Section 8 recording link here (Loom, YouTube, Google Drive, ...).
- * A YouTube/Loom URL is embedded; anything else is shown as a link.
+ * Section 8 recordings (Loom or YouTube links are embedded; anything else is
+ * shown as a link). Add, remove or reorder entries here.
  */
-export const VIDEO_URL = '';
+export const VIDEOS: { title: string; url: string }[] = [
+  { title: 'Walkthrough · part 1', url: 'https://www.loom.com/share/bc819e8c31154fef80e374f939e7663f' },
+  { title: 'Walkthrough · part 2', url: 'https://www.loom.com/share/aa400fbaa83c4db986b0ca700fecb8ab' },
+];
 
 function embedUrl(url: string): string | null {
   const yt = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{6,})/.exec(url);
@@ -15,54 +18,58 @@ function embedUrl(url: string): string | null {
 }
 
 export function S8Video() {
-  const embed = VIDEO_URL ? embedUrl(VIDEO_URL) : null;
   return (
     <>
       <SectionHero
         eyebrow="Section 8 · required"
         title="Show your working"
-        lede="A 1–3 minute, one-take walkthrough of how I approached the challenge: where I started, what I assumed, what confused me, and what I'd check with more time or access."
+        lede="My recorded walkthrough of how I approached the challenge: where I started, what I assumed, what confused me, and what I'd check with more time or access."
         tags={<Pill tone="brand">Video, not a written substitute</Pill>}
       />
-      <Card title="Walkthrough video">
-        {embed ? (
-          <div style={{ position: 'relative', paddingTop: '56.25%', borderRadius: 14, overflow: 'hidden', background: 'var(--rail)' }}>
-            <iframe src={embed} title="Section 8 walkthrough" allow="fullscreen; picture-in-picture" allowFullScreen style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 0 }} />
-          </div>
-        ) : VIDEO_URL ? (
-          <a className="btn primary" href={VIDEO_URL} target="_blank" rel="noreferrer">
-            <Icon name="video" /> Watch the walkthrough
-          </a>
-        ) : (
-          <div
-            style={{
-              borderRadius: 14,
-              background: 'var(--rail)',
-              color: '#c9dcef',
-              aspectRatio: '16 / 9',
-              display: 'grid',
-              placeItems: 'center',
-              textAlign: 'center',
-              padding: 24,
-            }}
-          >
-            <div>
-              <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'var(--brand)', display: 'grid', placeItems: 'center', margin: '0 auto 12px', color: '#fff' }}>
-                <Icon name="video" size={30} />
-              </div>
-              <strong style={{ color: '#fff' }}>Video sent separately with the submission</strong>
-              <div className="small">
-                Set <code style={{ background: 'transparent', color: '#99d5ef', borderColor: '#2b4a70' }}>VIDEO_URL</code> in <code style={{ background: 'transparent', color: '#99d5ef', borderColor: '#2b4a70' }}>src/sections/S8S9.tsx</code> to embed it here.
-              </div>
-            </div>
-          </div>
-        )}
-      </Card>
+      {VIDEOS.length === 0 ? (
+        <Card title="Walkthrough video">
+          <p className="small muted">Video sent separately with the submission. Add links to VIDEOS in src/sections/S8S9.tsx to embed them here.</p>
+        </Card>
+      ) : (
+        <div className="stack" data-testid="videos">
+          {VIDEOS.map((v) => {
+            const embed = embedUrl(v.url);
+            return (
+              <Card
+                key={v.url}
+                title={v.title}
+                right={
+                  <a className="btn sm" href={v.url} target="_blank" rel="noreferrer">
+                    <Icon name="video" size={16} /> Open in Loom
+                  </a>
+                }
+              >
+                {embed ? (
+                  <div style={{ position: 'relative', paddingTop: '56.25%', borderRadius: 14, overflow: 'hidden', background: 'var(--rail)' }}>
+                    <iframe
+                      src={embed}
+                      title={v.title}
+                      loading="lazy"
+                      allow="fullscreen; picture-in-picture"
+                      allowFullScreen
+                      style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 0 }}
+                    />
+                  </div>
+                ) : (
+                  <a className="btn primary" href={v.url} target="_blank" rel="noreferrer">
+                    <Icon name="video" /> Watch
+                  </a>
+                )}
+              </Card>
+            );
+          })}
+        </div>
+      )}
       <div style={{ height: 16 }} />
       <Card title="Optional in-app demo (not a substitute for the video)" right={<button className="btn primary sm" onClick={() => window.dispatchEvent(new Event('start-walkthrough'))} data-testid="start-demo">Start guided demo</button>}>
         <p className="small">
-          A 9-step tour (about 3–5 minutes) through the funnel maths, Account A's events, the risk engine, the CRM explorer, the drift incident and the Signal Desk. The required 1–3 minute
-          Section 8 video is recorded separately.
+          A 9-step tour (about 3–5 minutes) through the funnel maths, Account A's events, the risk engine, the CRM explorer, the drift incident and the Signal Desk. The recorded walkthroughs are
+          above.
         </p>
       </Card>
       <div style={{ height: 16 }} />

@@ -16,7 +16,7 @@ An interactive app that presents my full answer to the Superchat RevOps Engineer
 | 5 · The data model | CRM explorer: current vs proposed associations, evidence-gated approvals, migration preview, apply, rollback, audit trail |
 | 6 · When it breaks | Population incident simulator: baselines, drift detection, containment, impact analysis, replay with outbound disabled, restore |
 | 7 · Build the tool | **Signal Desk**: engine-scored queues, reviewer decisions with required reasons, live pre-action checks, atomic action ledger (concurrency, uncertain delivery, reconcile), Decisions and Outcomes views |
-| 8 · Show your working | Video embed (set `VIDEO_URL` in `src/sections/S8S9.tsx`), guided 9-step demo, assumptions and open questions |
+| 8 · Show your working | Two embedded Loom walkthrough videos (edit `VIDEOS` in `src/sections/S8S9.tsx`), guided 9-step demo, assumptions and open questions |
 | 9 · Feedback | Candid notes on the challenge |
 
 The original submission files (answers `.docx`, workings `.xlsx`, and the diagram PNGs) are in `public/files` and `public/artefacts`, and they're downloadable from the sidebar.
@@ -27,7 +27,7 @@ The original submission files (answers `.docx`, workings `.xlsx`, and the diagra
 npm install
 npm run dev        # local dev server
 npm test           # 66 unit tests (Vitest) for the domain logic
-npm run test:e2e   # 10 browser journeys (Playwright, Chromium)
+npm run test:e2e   # 11 browser journeys (Playwright, Chromium)
 npm run build      # type check + static build in dist/
 ```
 

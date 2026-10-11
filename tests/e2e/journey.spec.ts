@@ -265,3 +265,11 @@ test('guided demo walks all nine steps across sections', async ({ page }) => {
   await wt.getByRole('button', { name: 'Finish' }).click();
   await expect(wt).toHaveCount(0);
 });
+
+test('Section 8 embeds both walkthrough videos', async ({ page }) => {
+  await page.goto('/#s8');
+  const frames = page.getByTestId('videos').locator('iframe');
+  await expect(frames).toHaveCount(2);
+  await expect(frames.nth(0)).toHaveAttribute('src', 'https://www.loom.com/embed/bc819e8c31154fef80e374f939e7663f');
+  await expect(frames.nth(1)).toHaveAttribute('src', 'https://www.loom.com/embed/aa400fbaa83c4db986b0ca700fecb8ab');
+});

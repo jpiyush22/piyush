@@ -31,8 +31,8 @@ const OBJS: Obj[] = [
     w: 250,
     title: 'COMPANY · verified parent',
     lines: ['Existing Company object', 'Optional group hierarchy'],
-    fill: '#e8eefc',
-    stroke: '#5b7bb0',
+    fill: '#f2f7fe',
+    stroke: '#145fd9',
     status: 'changes',
     detail: [
       ['Keep', 'Existing Company object; native parent-child capability'],
@@ -47,8 +47,8 @@ const OBJS: Obj[] = [
     w: 260,
     title: 'COMPANY · operating entity',
     lines: ['Existing Company object', 'Verified operator relationship'],
-    fill: '#e8eefc',
-    stroke: '#5b7bb0',
+    fill: '#f2f7fe',
+    stroke: '#145fd9',
     status: 'changes',
     detail: [
       ['Keep', 'Existing Company object used by Sales and Marketing'],
@@ -63,8 +63,8 @@ const OBJS: Obj[] = [
     w: 260,
     title: 'WORKSPACE · product account',
     lines: ['One record per workspace_id', 'Plan · seats · motion · risk · owner'],
-    fill: '#e3f4ec',
-    stroke: '#4c9a76',
+    fill: '#eaf6fc',
+    stroke: '#0d2b4d',
     status: 'stays',
     detail: [
       ['Keep', 'Backend-created product account, plan, seats, motion, lifecycle stage, owner'],
@@ -79,8 +79,8 @@ const OBJS: Obj[] = [
     w: 270,
     title: 'DEAL · Sales-led opportunity',
     lines: ['Buying Company + scoped workspaces', 'Not required for SSF'],
-    fill: '#fdf1dd',
-    stroke: '#c79a45',
+    fill: '#f2f7fe',
+    stroke: '#145fd9',
     status: 'changes',
     detail: [
       ['Keep', 'Sales-led opportunities only; no Deal for every SSF signup'],
@@ -95,8 +95,8 @@ const OBJS: Obj[] = [
     w: 260,
     title: 'CB SUBSCRIPTION',
     lines: ['Chargebee mirror · one current', 'Chargebee ID · MRR · renewal'],
-    fill: '#fdf1dd',
-    stroke: '#c79a45',
+    fill: '#ffffff',
+    stroke: '#0d2b4d',
     status: 'stays',
     detail: [
       ['Keep', 'Backend-created mirror of Chargebee, linked to Workspace by external subscription ID'],
@@ -111,8 +111,8 @@ const OBJS: Obj[] = [
     w: 260,
     title: 'USER · workspace membership',
     lines: ['Unique per workspace', 'Activation and access context'],
-    fill: '#efecfb',
-    stroke: '#8b7cc7',
+    fill: '#ffffff',
+    stroke: '#0d2b4d',
     status: 'stays',
     detail: [
       ['Keep', 'One User per workspace membership'],
@@ -127,8 +127,8 @@ const OBJS: Obj[] = [
     w: 250,
     title: 'COMPANY · bill-to entity',
     lines: ['Existing Company object', 'Payer may differ from operator'],
-    fill: '#e8eefc',
-    stroke: '#5b7bb0',
+    fill: '#f2f7fe',
+    stroke: '#145fd9',
     status: 'changes',
     detail: [
       ['What', 'A distinct association role of the existing Company type, not a new object'],
@@ -143,8 +143,8 @@ const OBJS: Obj[] = [
     w: 260,
     title: 'CONTACT · person',
     lines: ['One identity across memberships', 'Can appear in many workspaces'],
-    fill: '#efecfb',
-    stroke: '#8b7cc7',
+    fill: '#ffffff',
+    stroke: '#0d2b4d',
     status: 'stays',
     detail: [
       ['Keep', 'Real person record'],
@@ -159,8 +159,8 @@ const OBJS: Obj[] = [
     w: 240,
     title: 'LEAD · prequalification',
     lines: ['Keep existing process', 'No auto-opportunity per SSF'],
-    fill: '#f2f3f6',
-    stroke: '#a7adbb',
+    fill: '#f7f9fc',
+    stroke: '#94a3b8',
     status: 'stays',
     detail: [
       ['Keep', 'Original routing/qualification workflows'],
@@ -196,25 +196,25 @@ function ERD() {
       <div className="legend" style={{ marginBottom: 10 }}>
         <span>
           <svg width="28" height="8" aria-hidden="true">
-            <line x1="0" y1="4" x2="28" y2="4" stroke="#5b7bb0" strokeWidth="2" />
+            <line x1="0" y1="4" x2="28" y2="4" stroke="#145fd9" strokeWidth="2" />
           </svg>
           Core association
         </span>
         <span>
           <svg width="28" height="8" aria-hidden="true">
-            <line x1="0" y1="4" x2="28" y2="4" stroke="#c79a45" strokeWidth="2" strokeDasharray="4 3" />
+            <line x1="0" y1="4" x2="28" y2="4" stroke="#94a3b8" strokeWidth="2" strokeDasharray="4 3" />
           </svg>
           Optional / explicitly verified
         </span>
         <span>
-          <Pill tone="ok">stays</Pill> <Pill tone="brand">changes</Pill>
+          <Pill tone="outline">Navy outline: stays</Pill> <Pill tone="brand">Blue outline: changes</Pill>
         </span>
       </div>
       <div className="svg-wrap">
         <svg viewBox="0 0 1090 560" role="img" aria-label="Proposed HubSpot object relationship diagram">
           <defs>
             <marker id="erd-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-              <path d="M0 0 L10 5 L0 10 z" fill="#5b7bb0" />
+              <path d="M0 0 L10 5 L0 10 z" fill="#145fd9" />
             </marker>
           </defs>
           {RELS.map((r, i) => (
@@ -222,7 +222,7 @@ function ERD() {
               <path
                 d={r.pts.map((p, j) => `${j ? 'L' : 'M'}${p[0]} ${p[1]}`).join(' ')}
                 fill="none"
-                stroke={r.dashed ? '#c79a45' : '#5b7bb0'}
+                stroke={r.dashed ? '#94a3b8' : '#145fd9'}
                 strokeWidth={r.a === sel || r.b === sel ? 2.6 : 1.8}
                 strokeDasharray={r.dashed ? '5 4' : undefined}
                 markerEnd="url(#erd-ar)"
@@ -232,11 +232,11 @@ function ERD() {
           {OBJS.map((b) => (
             <g key={b.id} onClick={() => setSel(b.id)} onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setSel(b.id)} tabIndex={0} role="button" aria-label={`${b.title}: details`} style={{ cursor: 'pointer' }}>
               <rect x={b.x} y={b.y} width={b.w} height={70} rx={14} fill={b.fill} stroke={b.stroke} strokeWidth={sel === b.id ? 3 : 1.5} />
-              <text x={b.x + b.w / 2} y={b.y + 24} fontSize="13" fontWeight={750} textAnchor="middle" fill="#14182e">
+              <text x={b.x + b.w / 2} y={b.y + 24} fontSize="13" fontWeight={750} textAnchor="middle" fill="#0d2b4d">
                 {b.title}
               </text>
               {b.lines.map((l, i) => (
-                <text key={i} x={b.x + b.w / 2} y={b.y + 43 + i * 15} fontSize="11.5" textAnchor="middle" fill="#3d4360">
+                <text key={i} x={b.x + b.w / 2} y={b.y + 43 + i * 15} fontSize="11.5" textAnchor="middle" fill="#475569">
                   {l}
                 </text>
               ))}

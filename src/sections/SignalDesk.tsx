@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Icon, Logo, Pill } from '../components/ui';
+import { Icon, Pill } from '../components/ui';
 
 /** All records here are mock data for the prototype, not Superchat accounts. */
 type Status = 'AT RISK' | 'WATCH' | 'UNKNOWN' | 'RECOVERED';
@@ -253,7 +253,9 @@ export default function SignalDesk() {
     <div className="desk">
       <div className="desk-top">
         <div className="brand">
-          <Logo size={28} />
+          <span style={{ width: 30, height: 30, borderRadius: 8, background: 'var(--brand)', display: 'grid', placeItems: 'center' }}>
+            <Icon name="desk" size={18} />
+          </span>
           <span>Signal Desk</span>
           <span className="pill" style={{ background: 'rgba(255,255,255,0.12)', color: '#fff' }}>
             prototype · mock data

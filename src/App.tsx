@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Icon, Logo } from './components/ui';
+import { BrandLogo, BrandMark, Icon } from './components/ui';
 import { SECTIONS, type SectionId } from './sections/registry';
 import Overview from './sections/Overview';
 import S1Funnel from './sections/S1Funnel';
@@ -16,22 +16,10 @@ const readHash = (): SectionId => {
   return SECTIONS.some((s) => s.id === h) ? h : 'overview';
 };
 
-type Theme = 'system' | 'light' | 'dark';
-
-function readTheme(): Theme {
-  try {
-    const t = localStorage.getItem('theme');
-    return t === 'light' || t === 'dark' ? t : 'system';
-  } catch {
-    return 'system';
-  }
-}
-
 export default function App() {
   const [current, setCurrent] = useState<SectionId>(readHash);
   const [navOpen, setNavOpen] = useState(false);
   const [query, setQuery] = useState('');
-  const [theme, setTheme] = useState<Theme>(readTheme);
 
   useEffect(() => {
     const onHash = () => {
@@ -42,17 +30,6 @@ export default function App() {
     window.addEventListener('hashchange', onHash);
     return () => window.removeEventListener('hashchange', onHash);
   }, []);
-
-  useEffect(() => {
-    const root = document.documentElement;
-    if (theme === 'system') root.removeAttribute('data-theme');
-    else root.setAttribute('data-theme', theme);
-    try {
-      localStorage.setItem('theme', theme);
-    } catch {
-      /* storage unavailable: theme just won't persist */
-    }
-  }, [theme]);
 
   const go = (id: SectionId) => {
     if (id === current) window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -82,13 +59,11 @@ export default function App() {
     s9: <S9Feedback />,
   };
 
-  const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia?.('(prefers-color-scheme: dark)').matches);
-
   return (
     <div className={`app ${navOpen ? 'nav-open' : ''}`}>
       <aside className="rail" aria-label="App">
         <div className="rail-logo">
-          <Logo />
+          <BrandMark />
         </div>
         {SECTIONS.map((s) => (
           <button key={s.id} className="rail-btn" aria-current={current === s.id ? 'page' : undefined} onClick={() => go(s.id)} aria-label={s.title}>
@@ -100,10 +75,6 @@ export default function App() {
           </button>
         ))}
         <div className="rail-spacer" />
-        <button className="rail-btn" onClick={() => setTheme(isDark ? 'light' : 'dark')} aria-label="Toggle dark mode">
-          <Icon name={isDark ? 'sun' : 'moon'} />
-          <span className="tip">{isDark ? 'Light mode' : 'Dark mode'}</span>
-        </button>
         <div className="rail-avatar" title="Piyush Jain">
           PJ
         </div>
@@ -113,8 +84,9 @@ export default function App() {
 
       <nav className="nav" aria-label="Sections">
         <div className="nav-head">
-          <div className="nav-title">Take-home</div>
-          <div className="nav-sub">RevOps Engineer · Piyush Jain</div>
+          <BrandLogo className="nav-logo" />
+          <div className="nav-title">RevOps take-home</div>
+          <div className="nav-sub">Piyush Jain · RevOps Engineer candidate</div>
           <label className="nav-search">
             <Icon name="search" size={16} />
             <input placeholder="Search sections" value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Search sections" />
@@ -140,7 +112,7 @@ export default function App() {
           ))}
           <div className="nav-group">Downloads</div>
           <a className="nav-item" href="files/RevOps_Take-Home_Piyush_Jain_answers.docx" download>
-            <span className="avatar" style={{ background: '#2b579a' }}>
+            <span className="avatar" style={{ background: '#0d2b4d' }}>
               <Icon name="download" size={16} />
             </span>
             <span className="meta">
@@ -149,7 +121,7 @@ export default function App() {
             </span>
           </a>
           <a className="nav-item" href="files/RevOps_Take-Home_Piyush_Jain_workings.xlsx" download>
-            <span className="avatar" style={{ background: '#217346' }}>
+            <span className="avatar" style={{ background: '#0d2b4d' }}>
               <Icon name="download" size={16} />
             </span>
             <span className="meta">

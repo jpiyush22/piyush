@@ -1,124 +1,65 @@
 /*
- * Design tokens, modelled on the Superchat product UI: a dark navy app rail,
- * a bright Superchat blue for primary actions, airy light surfaces and rounded,
- * chat-bubble shapes. Every color in the app comes from here, so adjusting the
- * brand is a one-file change.
+ * Design tokens from the Superchat brand reference (docs/brand-guide.md).
+ * Primary blue, light blue and dark navy are the brand reference colors; the
+ * neutrals, radii and 8px spacing are the guide's recommended implementation
+ * values. Pangea isn't licensed here, so headings use Figtree at heavier
+ * weights, as the guide specifies.
  */
 :root {
-  --brand: #3b5bfd;
-  --brand-strong: #2a45d8;
-  --brand-ink: #1a2470;
-  --brand-soft: #eef1ff;
-  --brand-softer: #f5f7ff;
-  --brand-grad: linear-gradient(135deg, #3b5bfd 0%, #6c4dff 55%, #a35bff 100%);
+  /* Brand reference colors */
+  --brand: #145fd9;
+  --brand-strong: #0f4fb8;
+  --brand-light: #99d5ef;
+  --navy: #0d2b4d;
+  --navy-2: #163a63;
 
-  --rail: #0d1230;
-  --rail-2: #161c45;
-  --rail-ink: #c9cdf0;
-  --rail-ink-strong: #ffffff;
+  /* Tints derived from the brand colors for fills and focus states */
+  --brand-soft: #e8f0fc;
+  --brand-softer: #f2f7fe;
+  --light-soft: #eaf6fc;
 
-  --bg: #f5f6fb;
+  /* Recommended neutrals */
   --surface: #ffffff;
-  --surface-2: #f9fafd;
-  --surface-3: #f1f3f9;
-  --ink: #0f1222;
-  --ink-2: #474d66;
-  --ink-3: #868ca5;
-  --line: #e5e8f1;
-  --line-strong: #d3d7e5;
+  --bg: #f7f9fc;
+  --surface-2: #f7f9fc;
+  --surface-3: #eef2f7;
+  --line: #e5eaf0;
+  --line-strong: #d3dbe5;
+  --ink: #111827;
+  --heading: #0d2b4d;
+  --ink-2: #475569;
+  --ink-3: #64748b;
 
-  --risk: #d9343a;
-  --risk-soft: #fdeced;
-  --watch: #b86e00;
-  --watch-soft: #fff3dc;
-  --ok: #138a43;
-  --ok-soft: #e4f6ea;
-  --unknown: #6847d6;
-  --unknown-soft: #efebff;
-  --whatsapp: #25d366;
+  /* Status: always paired with a text label, never color alone */
+  --risk: #b42318;
+  --risk-soft: #fef3f2;
+  --watch: #b54708;
+  --watch-soft: #fffaeb;
+  --ok: #067647;
+  --ok-soft: #ecfdf3;
+  --unknown: #475569;
+  --unknown-soft: #f1f5f9;
 
-  /* Diagram series */
-  --ssf: #3b5bfd;
-  --sales: #a35bff;
-  --neutral-bar: #c9cff0;
+  /* Chart series */
+  --ssf: #145fd9;
+  --sales: #0d2b4d;
+  --muted-line: #94a3b8;
 
-  --shadow-sm: 0 1px 2px rgba(15, 18, 34, 0.06);
-  --shadow: 0 1px 2px rgba(15, 18, 34, 0.05), 0 6px 20px -8px rgba(15, 18, 34, 0.12);
-  --shadow-lg: 0 20px 50px -20px rgba(26, 36, 112, 0.35);
+  --rail: #0d2b4d;
+  --rail-2: #163a63;
+  --rail-ink: #b9cbe0;
+
+  --shadow-sm: 0 1px 2px rgba(13, 43, 77, 0.05);
+  --shadow: 0 1px 2px rgba(13, 43, 77, 0.04), 0 8px 24px -12px rgba(13, 43, 77, 0.14);
+  --shadow-lg: 0 24px 56px -24px rgba(13, 43, 77, 0.4);
 
   --radius-sm: 8px;
-  --radius: 14px;
-  --radius-lg: 22px;
+  --radius-btn: 10px;
+  --radius: 16px;
+  --radius-lg: 24px;
 
-  --font: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Figtree', 'Inter', Arial, sans-serif;
+  --font: 'Figtree', 'Inter', Arial, sans-serif;
   --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   color-scheme: light;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    --brand: #6f86ff;
-    --brand-strong: #8ea0ff;
-    --brand-ink: #d6dcff;
-    --brand-soft: #1d2452;
-    --brand-softer: #161b3d;
-    --rail: #080b1f;
-    --rail-2: #121739;
-    --bg: #0c0f22;
-    --surface: #131735;
-    --surface-2: #171c3e;
-    --surface-3: #1d2349;
-    --ink: #eef0fb;
-    --ink-2: #b4b9d6;
-    --ink-3: #7c82a3;
-    --line: #262c57;
-    --line-strong: #343b6d;
-    --risk: #ff7b80;
-    --risk-soft: #3a1a26;
-    --watch: #ffbe55;
-    --watch-soft: #3a2b12;
-    --ok: #4fd486;
-    --ok-soft: #12321f;
-    --unknown: #a995ff;
-    --unknown-soft: #261e4d;
-    --ssf: #6f86ff;
-    --sales: #c08bff;
-    --neutral-bar: #2f3667;
-    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -10px rgba(0, 0, 0, 0.6);
-    --shadow-lg: 0 20px 50px -20px rgba(0, 0, 0, 0.7);
-    color-scheme: dark;
-  }
-}
-
-:root[data-theme='dark'] {
-  --brand: #6f86ff;
-  --brand-strong: #8ea0ff;
-  --brand-ink: #d6dcff;
-  --brand-soft: #1d2452;
-  --brand-softer: #161b3d;
-  --rail: #080b1f;
-  --rail-2: #121739;
-  --bg: #0c0f22;
-  --surface: #131735;
-  --surface-2: #171c3e;
-  --surface-3: #1d2349;
-  --ink: #eef0fb;
-  --ink-2: #b4b9d6;
-  --ink-3: #7c82a3;
-  --line: #262c57;
-  --line-strong: #343b6d;
-  --risk: #ff7b80;
-  --risk-soft: #3a1a26;
-  --watch: #ffbe55;
-  --watch-soft: #3a2b12;
-  --ok: #4fd486;
-  --ok-soft: #12321f;
-  --unknown: #a995ff;
-  --unknown-soft: #261e4d;
-  --ssf: #6f86ff;
-  --sales: #c08bff;
-  --neutral-bar: #2f3667;
-  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -10px rgba(0, 0, 0, 0.6);
-  --shadow-lg: 0 20px 50px -20px rgba(0, 0, 0, 0.7);
-  color-scheme: dark;
 }

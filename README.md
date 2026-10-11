@@ -27,6 +27,17 @@ npm run dev      # local dev server
 npm run build    # static build in dist/ (relative paths, so it works on any static host)
 ```
 
-React 18 + TypeScript + Vite. It uses no UI or chart libraries: the diagrams are hand-built SVG. All brand colors live in `src/styles/tokens.css`. Light and dark modes are both supported. The layout is designed for desktop.
+React 18 + TypeScript + Vite. It uses no UI or chart libraries: the diagrams are hand-built SVG. The layout is designed for desktop.
+
+## Design system
+
+The styling follows the Superchat brand reference in [`docs/brand-guide.md`](docs/brand-guide.md):
+
+- **Colors:** primary blue `#145FD9`, light blue `#99D5EF` and dark navy `#0D2B4D`, on white / off-white `#F7F9FC` surfaces with `#E5EAF0` borders. Diagrams use only blue, navy and grey; timing is told apart by dash pattern. Red, amber and green appear only for risk status, always next to a text label.
+- **Type:** Figtree throughout, with heavier weights for headings. Pangea isn't licensed here, so it isn't used.
+- **Shape:** 16px card radius, 10px button radius, spacing in 8px steps.
+- **Logo:** the supplied Superchat mark and wordmark (`public/brand/`), used unaltered.
+
+All tokens live in `src/styles/tokens.css`.
 
 Note: this is a take-home submission, not an official Superchat product. All Signal Desk records are mock data.

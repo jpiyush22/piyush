@@ -1,11 +1,11 @@
 import { Answer, Callout, Card, DataTable, KV, Pill, QA, SectionHero } from '../components/ui';
 
 const ROADMAP = [
-  { label: 'Validate both problems', from: 1, to: 2, color: '#3b5bfd', text: 'Baseline + lead audit' },
-  { label: 'Adoption-risk pilot', from: 3, to: 6, color: '#6c4dff', text: 'Execution signals · daily SSF watchlist' },
-  { label: 'Test interventions', from: 7, to: 9, color: '#a35bff', text: 'SSF guidance · CSx tasks' },
-  { label: 'Fix proven qualification', from: 10, to: 12, color: '#d0609c', text: 'Routing · dedupe · source' },
-  { label: 'Quick Sales fixes', from: 1, to: 12, color: '#16a34a', text: 'Ship obvious routing/duplicate fixes as soon as the audit confirms them' },
+  { label: 'Validate both problems', from: 1, to: 2, color: 'var(--navy)', text: 'Baseline + lead audit' },
+  { label: 'Adoption-risk pilot', from: 3, to: 6, color: 'var(--brand)', text: 'Execution signals · daily SSF watchlist' },
+  { label: 'Test interventions', from: 7, to: 9, color: 'var(--navy)', text: 'SSF guidance · CSx tasks' },
+  { label: 'Fix proven qualification', from: 10, to: 12, color: 'var(--brand)', text: 'Routing · dedupe · source' },
+  { label: 'Quick Sales fixes', from: 1, to: 12, color: 'var(--brand-light)', text: 'Ship obvious routing/duplicate fixes as soon as the audit confirms them' },
 ];
 
 export default function S3FirstWeek() {
@@ -110,7 +110,7 @@ export default function S3FirstWeek() {
             {ROADMAP.map((r) => (
               <div key={r.label} style={{ display: 'contents' }}>
                 <div className="lbl">{r.label}</div>
-                <div className="blk" style={{ gridColumn: `${r.from + 1} / ${r.to + 2}`, background: r.color, opacity: r.label.startsWith('Quick') ? 0.85 : 1 }} title={r.text}>
+                <div className="blk" style={{ gridColumn: `${r.from + 1} / ${r.to + 2}`, background: r.color, color: r.label.startsWith('Quick') ? 'var(--navy)' : '#fff' }} title={r.text}>
                   {r.text}
                 </div>
               </div>

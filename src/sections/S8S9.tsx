@@ -38,7 +38,7 @@ export function S8Video() {
             style={{
               borderRadius: 14,
               background: 'var(--rail)',
-              color: '#c9cdf0',
+              color: '#c9dcef',
               aspectRatio: '16 / 9',
               display: 'grid',
               placeItems: 'center',
@@ -52,7 +52,7 @@ export function S8Video() {
               </div>
               <strong style={{ color: '#fff' }}>Video sent separately with the submission</strong>
               <div className="small">
-                Set <code style={{ background: 'transparent', color: '#9fb0ff', borderColor: '#343b6d' }}>VIDEO_URL</code> in <code style={{ background: 'transparent', color: '#9fb0ff', borderColor: '#343b6d' }}>src/sections/S8S9.tsx</code> to embed it here.
+                Set <code style={{ background: 'transparent', color: '#99d5ef', borderColor: '#2b4a70' }}>VIDEO_URL</code> in <code style={{ background: 'transparent', color: '#99d5ef', borderColor: '#2b4a70' }}>src/sections/S8S9.tsx</code> to embed it here.
               </div>
             </div>
           </div>

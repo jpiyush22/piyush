@@ -3,12 +3,12 @@ import { Answer, BlockTitle, Callout, Card, DataTable, KV, Pill, SectionHero, St
 
 type Timing = 'realtime' | 'batch4h' | 'daily' | 'triggered' | 'feedback';
 
-const TIMING: Record<Timing, { label: string; color: string; desc: string }> = {
-  realtime: { label: 'Real-time / as received', color: '#16a34a', desc: 'Existing product feed and backend pushes' },
-  batch4h: { label: 'Batched · every 4h', color: '#3b5bfd', desc: 'Airbyte incremental, never a full resync' },
-  daily: { label: 'Scheduled · daily', color: '#8a55fc', desc: 'Dagster model + Hightouch after QA passes' },
-  triggered: { label: 'Event-triggered', color: '#e07a1f', desc: 'HubSpot property change → Make/n8n' },
-  feedback: { label: 'Feedback loop', color: '#868ca5', desc: 'Outcomes back to the warehouse' },
+const TIMING: Record<Timing, { label: string; color: string; dash?: string; desc: string }> = {
+  realtime: { label: 'Real-time / as received', color: '#0d2b4d', desc: 'Existing product feed and backend pushes' },
+  batch4h: { label: 'Batched · every 4h', color: '#145fd9', dash: '7 5', desc: 'Airbyte incremental, never a full resync' },
+  daily: { label: 'Scheduled · daily', color: '#145fd9', desc: 'Dagster model + Hightouch after QA passes' },
+  triggered: { label: 'Event-triggered', color: '#0d2b4d', dash: '2 4', desc: 'HubSpot property change → Make/n8n' },
+  feedback: { label: 'Feedback loop', color: '#94a3b8', dash: '7 5', desc: 'Outcomes back to the warehouse' },
 };
 
 interface Node {
@@ -37,7 +37,7 @@ const NODES: Node[] = [
     title: 'Product events',
     sub: 'campaign + depth features',
     layer: 'Source',
-    color: '#16a34a',
+    color: '#0d2b4d',
     role: 'Workspace, campaign and depth-feature events (plus the proposed workflow/AI execution events).',
     why: 'Already lands in the warehouse. No duplicate Airbyte product sync.',
     timing: 'As received',
@@ -52,7 +52,7 @@ const NODES: Node[] = [
     title: 'HubSpot CRM',
     sub: 'owners · CSx tasks · emails',
     layer: 'Source',
-    color: '#3b5bfd',
+    color: '#145fd9',
     role: 'Workspace owner, CSx tasks, call history and lifecycle email engagement.',
     why: 'This is where CS and lifecycle context is recorded, so the model joins it rather than re-creating it.',
     timing: 'Airbyte incremental, every 4 hours (proposed)',
@@ -67,7 +67,7 @@ const NODES: Node[] = [
     title: 'Chargebee',
     sub: 'plan · seats · status · renewal',
     layer: 'Source',
-    color: '#3b5bfd',
+    color: '#145fd9',
     role: 'Authoritative subscription state: paid status, plan, seats, downgrade, cancellation, renewal.',
     why: 'Chargebee is the billing source of truth and gates any customer action.',
     timing: 'Airbyte incremental every 4 hours, plus a live recheck right before any action',
@@ -82,7 +82,7 @@ const NODES: Node[] = [
     title: 'Stripe',
     sub: 'payment signals only',
     layer: 'Source',
-    color: '#3b5bfd',
+    color: '#145fd9',
     role: 'Optional payment evidence (failed payments etc.).',
     why: 'Useful context, but never counted as another subscription.',
     timing: 'Airbyte incremental, every 4 hours',
@@ -97,7 +97,7 @@ const NODES: Node[] = [
     title: 'Airbyte · incremental sync',
     sub: 'HubSpot / billing → raw tables · no full resync',
     layer: 'Ingest',
-    color: '#3b5bfd',
+    color: '#145fd9',
     role: 'Moves HubSpot, Chargebee and Stripe data into raw warehouse tables using incremental cursors.',
     why: 'Usage-billed: full resyncs are expensive, so incremental only. Product events don’t go through here.',
     timing: 'Every 4 hours to start (proposed, not a documented SLA)',
@@ -112,7 +112,7 @@ const NODES: Node[] = [
     title: 'Warehouse · raw',
     sub: 'events + CSx + subscriptions',
     layer: 'Warehouse',
-    color: '#8a55fc',
+    color: '#145fd9',
     role: 'Immutable raw layer with QA: stable IDs, lag, duplicate or missing rows. Metabase/Amplitude read from here to inspect trends.',
     why: 'The only place product, billing and CRM data can be modelled together.',
     timing: 'Continuously appended',
@@ -127,7 +127,7 @@ const NODES: Node[] = [
     title: 'Workspace risk model',
     sub: 'WATCH · AT RISK · UNKNOWN',
     layer: 'Warehouse',
-    color: '#8a55fc',
+    color: '#145fd9',
     role: 'One row per Workspace per day: signals, status, reason codes, as-of time, model version, confidence.',
     why: 'Deterministic, explainable rules owned in SQL. The warehouse owns the calculation; nothing downstream re-scores.',
     timing: 'Daily, only after expected sources and checks finish',
@@ -142,7 +142,7 @@ const NODES: Node[] = [
     title: 'Dagster',
     sub: 'schedule · sequence · QA gate',
     layer: 'Orchestration',
-    color: '#8a55fc',
+    color: '#145fd9',
     role: 'Runs syncs → models → checks, in order. Holds Hightouch until QA passes.',
     why: 'Already orchestrates Superchat’s jobs and flags failures to Slack.',
     timing: 'Daily run; freshness checks each sync',
@@ -157,7 +157,7 @@ const NODES: Node[] = [
     title: 'Slack',
     sub: 'technical failures · urgent only',
     layer: 'Alerting',
-    color: '#e07a1f',
+    color: '#0d2b4d',
     role: 'Technical failures and rare urgent exceptions.',
     why: 'GTM lives in Slack, but routine flags belong in HubSpot to avoid alert fatigue.',
     timing: 'On failure / exception',
@@ -172,7 +172,7 @@ const NODES: Node[] = [
     title: 'Hightouch',
     sub: 'reverse ETL · changed rows',
     layer: 'Reverse ETL',
-    color: '#8a55fc',
+    color: '#145fd9',
     role: 'Upserts only changed Workspace risk properties: status, reason codes, last relevant event, freshness, scored-at.',
     why: 'Moves the warehouse result into the CRM GTM already works in.',
     timing: 'Daily, after the model passes QA',
@@ -187,7 +187,7 @@ const NODES: Node[] = [
     title: 'HubSpot · Workspace',
     sub: 'risk fields · owner · evidence',
     layer: 'CRM',
-    color: '#3b5bfd',
+    color: '#145fd9',
     role: 'The action target: Workspace object carries risk fields, owner and latest evidence.',
     why: 'Actions should fire after the CRM record updates, not on every raw product event.',
     timing: 'Updated daily; property-change workflow fires on change',
@@ -202,7 +202,7 @@ const NODES: Node[] = [
     title: 'Make / n8n',
     sub: 'route · recheck · dedupe',
     layer: 'Automation',
-    color: '#e07a1f',
+    color: '#0d2b4d',
     role: 'Routes by motion and owner; rechecks live Chargebee eligibility, HubSpot status, owner, opt-out and recent outreach.',
     why: 'The automation layer is good at multi-step API calls, bad at owning business logic, so it only routes.',
     timing: 'Triggered by HubSpot property change',
@@ -217,7 +217,7 @@ const NODES: Node[] = [
     title: 'LLM (optional)',
     sub: 'drafts a factual task summary',
     layer: 'Assist',
-    color: '#868ca5',
+    color: '#94a3b8',
     role: 'Turns approved, structured signals into a short task summary.',
     why: 'Saves CSx reading time, without touching decisions.',
     timing: 'Opt-in, per task',
@@ -232,7 +232,7 @@ const NODES: Node[] = [
     title: 'SSF · lifecycle guidance',
     sub: 'one relevant next step',
     layer: 'Last mile',
-    color: '#16a34a',
+    color: '#0d2b4d',
     role: 'One approved onboarding email or in-app step tailored to the missing feature.',
     why: 'SSF has no CSx owner, so the product and lifecycle team are the channel.',
     timing: 'After live eligibility check',
@@ -247,7 +247,7 @@ const NODES: Node[] = [
     title: 'Sales-led · CSx task',
     sub: 'reason · trend · suggested play',
     layer: 'Last mile',
-    color: '#3b5bfd',
+    color: '#145fd9',
     role: 'HubSpot task for the actual CSx owner with reason, recent trend, evidence timestamp and suggested next step.',
     why: 'CSx decides how and when to contact. The system informs; people own the conversation.',
     timing: 'After live eligibility check',
@@ -262,7 +262,7 @@ const NODES: Node[] = [
     title: 'Feedback loop',
     sub: 'tasks + lifecycle outcomes → Airbyte → warehouse',
     layer: 'Measure',
-    color: '#868ca5',
+    color: '#94a3b8',
     role: 'Actions and resolutions are stored against the Workspace and flow back for evaluation.',
     why: 'Measure alerts, interventions and adoption lift, not just uptime.',
     timing: 'Airbyte incremental every 4h + daily model',
@@ -356,14 +356,7 @@ function Architecture() {
             const d = e.pts.map((p, j) => `${j ? 'L' : 'M'}${p[0]} ${p[1]}`).join(' ');
             return (
               <g key={i} opacity={dim ? 0.12 : 1}>
-                <path
-                  d={d}
-                  className={`flow-line ${e.dashed ? '' : 'animated'}`}
-                  stroke={TIMING[e.t].color}
-                  strokeWidth={hl ? 3 : 2}
-                  strokeDasharray={e.dashed ? '5 5' : undefined}
-                  markerEnd={`url(#ar-${e.t})`}
-                />
+                <path d={d} className="flow-line" stroke={TIMING[e.t].color} strokeWidth={hl ? 3 : 2} strokeDasharray={TIMING[e.t].dash} markerEnd={`url(#ar-${e.t})`} />
                 {e.label && (
                   <text x={e.lx} y={e.ly} fontSize="11" fontWeight={650} fill={TIMING[e.t].color}>
                     {e.label}
@@ -422,8 +415,8 @@ function Architecture() {
           <div className="stack" style={{ gap: 8 }}>
             {(Object.keys(TIMING) as Timing[]).map((t) => (
               <div key={t} className="small" style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                <svg width="36" height="8" aria-hidden="true">
-                  <line x1="0" y1="4" x2="36" y2="4" stroke={TIMING[t].color} strokeWidth="3" strokeDasharray={t === 'feedback' ? '4 4' : undefined} />
+                <svg width="36" height="8" aria-hidden="true" style={{ flex: "none" }}>
+                  <line x1="0" y1="4" x2="36" y2="4" stroke={TIMING[t].color} strokeWidth="3" strokeDasharray={TIMING[t].dash} />
                 </svg>
                 <strong>{TIMING[t].label}</strong>
                 <span className="muted">{TIMING[t].desc}</span>
@@ -561,12 +554,12 @@ export default function S4System() {
       <DataTable
         head={['From', 'Connection', 'Destination', 'Timing', 'Contract / guardrail']}
         rows={[
-          ['Product backend', 'Existing product event feed', 'Warehouse raw', <Pill tone="ok">As received</Pill>, 'No duplicate Airbyte product sync'],
+          ['Product backend', 'Existing product event feed', 'Warehouse raw', <Pill tone="outline">As received</Pill>, 'No duplicate Airbyte product sync'],
           ['HubSpot + lifecycle', 'Airbyte incremental', 'Warehouse raw', <Pill tone="brand">Every 4h</Pill>, 'No full resync; verified IDs'],
           ['Chargebee + Stripe', 'Airbyte incremental', 'Warehouse raw', <Pill tone="brand">Every 4h</Pill>, 'Chargebee decides subscription state; Stripe is payment evidence'],
-          ['Dagster', 'Orchestrate ingestion, QA, models', 'Risk model', <Pill tone="unknown">Daily after QA</Pill>, 'Technical failure → Slack'],
-          ['Warehouse model', 'Hightouch, changed rows only', 'HubSpot Workspace', <Pill tone="unknown">Daily after model</Pill>, 'Status, reason, last depth success, as-of'],
-          ['Workspace risk property change', 'HubSpot workflow / webhook → Make or n8n', 'SSF / Sales-led action', <Pill tone="watch">On change</Pill>, 'Recheck live eligibility + owner; idempotency key with 14-day cooldown'],
+          ['Dagster', 'Orchestrate ingestion, QA, models', 'Risk model', <Pill tone="brand">Daily after QA</Pill>, 'Technical failure → Slack'],
+          ['Warehouse model', 'Hightouch, changed rows only', 'HubSpot Workspace', <Pill tone="brand">Daily after model</Pill>, 'Status, reason, last depth success, as-of'],
+          ['Workspace risk property change', 'HubSpot workflow / webhook → Make or n8n', 'SSF / Sales-led action', <Pill tone="outline">On change</Pill>, 'Recheck live eligibility + owner; idempotency key with 14-day cooldown'],
           ['HubSpot actions + email response', 'Airbyte incremental', 'Warehouse feedback', <Pill tone="brand">4h + daily</Pill>, 'Avoid re-alerts, measure outcomes'],
         ]}
       />
@@ -663,8 +656,8 @@ export default function S4System() {
           rows={[
             [<Pill tone="brand">Week 1</Pill>, 'Confirm definitions with CSx/Product; validate Workspace ↔ Subscription joins; audit Account A-style event completeness; model 50 paid SSF workspaces', 'Small warehouse evidence table + event-quality gaps', 'Can rows, stages and billing reconcile?', 'Custom ML score, separate app'],
             [<Pill tone="brand">Week 1</Pill>, 'Review-only candidate signals from current events; request workflow/AI execution events as the top instrumentation priority', 'Low-confidence evidence table and reason codes; no outreach from proxy', "No 'no workflow edit' = 'stopped running'", 'Complex behavioural tracking'],
-            [<Pill tone="unknown">Week 2</Pill>, 'One daily Dagster model; dry-run rules; Hightouch sync into a HubSpot test view', 'Status / reason / as-of + monitoring', 'Correct workspace, no duplicate tasks', 'Real-time recomputation'],
-            [<Pill tone="unknown">Week 2</Pill>, 'Pilot a few human-approved actions only with independent reliable evidence + live eligibility check; log action, key and false positives', 'Gated pilot + audit log', 'Approved owner, current billing, valid risk, no duplicate', 'Automated AI outreach at scale'],
+            [<Pill tone="outline">Week 2</Pill>, 'One daily Dagster model; dry-run rules; Hightouch sync into a HubSpot test view', 'Status / reason / as-of + monitoring', 'Correct workspace, no duplicate tasks', 'Real-time recomputation'],
+            [<Pill tone="outline">Week 2</Pill>, 'Pilot a few human-approved actions only with independent reliable evidence + live eligibility check; log action, key and false positives', 'Gated pilot + audit log', 'Approved owner, current billing, valid risk, no duplicate', 'Automated AI outreach at scale'],
           ]}
         />
       </Card>

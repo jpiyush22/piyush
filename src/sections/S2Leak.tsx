@@ -40,11 +40,11 @@ export const ACCOUNT_A: Ev[] = [
 
 const LANES: { id: Lane; label: string; color: string }[] = [
   { id: 'messaging', label: 'Core messaging (sent/wk)', color: 'var(--brand)' },
-  { id: 'campaign', label: 'Campaign', color: '#16a34a' },
-  { id: 'workflow', label: 'Workflows', color: '#a35bff' },
-  { id: 'template', label: 'Templates', color: '#c05bd8' },
-  { id: 'ai', label: 'AI agent', color: '#e0729a' },
-  { id: 'users', label: 'Users invited', color: '#868ca5' },
+  { id: 'campaign', label: 'Campaign', color: 'var(--navy)' },
+  { id: 'workflow', label: 'Workflows', color: 'var(--brand)' },
+  { id: 'template', label: 'Templates', color: 'var(--navy)' },
+  { id: 'ai', label: 'AI agent', color: 'var(--brand)' },
+  { id: 'users', label: 'Users invited', color: 'var(--muted-line)' },
   { id: 'account', label: 'Account', color: 'var(--risk)' },
 ];
 
@@ -89,7 +89,7 @@ function Timeline() {
             </g>
           ))}
           {/* Depth-feature activity window, then silence */}
-          <rect x={x(4)} y={laneY('workflow') - 16} width={x(19) - x(4)} height={laneY('ai') - laneY('workflow') + 32} rx={10} fill="#a35bff" opacity={0.08} />
+          <rect x={x(4)} y={laneY('workflow') - 16} width={x(19) - x(4)} height={laneY('ai') - laneY('workflow') + 32} rx={10} fill="var(--brand-light)" opacity={0.3} />
           {showWatch && (
             <g>
               <line x1={x(33)} x2={x(33)} y1={top - 10} y2={H - 26} stroke="var(--watch)" strokeWidth={2} strokeDasharray="5 4" />

@@ -98,26 +98,13 @@ export function Icon({ name, size = 20, className }: { name: keyof typeof paths 
   );
 }
 
-/** A chat-bubble "S" mark, drawn in the spirit of the Superchat logo. */
-export function Logo({ size = 40 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 40 40" aria-label="Superchat" role="img">
-      <defs>
-        <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#3b5bfd" />
-          <stop offset="1" stopColor="#a35bff" />
-        </linearGradient>
-      </defs>
-      <path d="M20 3C10.6 3 3 10.2 3 19.2c0 3.3 1 6.3 2.8 8.9L4 36l8.4-2.6c2.3 1.1 4.9 1.7 7.6 1.7 9.4 0 17-7.2 17-16.1S29.4 3 20 3Z" fill="url(#lg)" />
-      <path
-        d="M24.6 14.2c-.9-1.4-2.6-2.2-4.6-2.2-2.9 0-4.9 1.6-4.9 3.8 0 4.9 9.9 3 9.9 7.6 0 2.2-2.1 3.8-5 3.8-2.2 0-4-.9-5-2.5"
-        fill="none"
-        stroke="#fff"
-        strokeWidth="2.8"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
+/** The supplied Superchat brand assets, used as-is (never redrawn). */
+export function BrandMark({ size = 40 }: { size?: number }) {
+  return <img src="brand/superchat-mark.png" width={size} height={size} alt="Superchat" />;
+}
+
+export function BrandLogo({ height = 24, className }: { height?: number; className?: string }) {
+  return <img src="brand/superchat-logo.png" height={height} style={{ width: 'auto' }} alt="Superchat" className={className} />;
 }
 
 /* ───────────── Primitives ───────────── */

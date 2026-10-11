@@ -7,8 +7,8 @@ Audit of the Superchat RevOps take-home app as it stood at commit `4dda950`, bef
 | Reference | Available? | Notes |
 |---|---|---|
 | Original Superchat take-home brief | Yes | Pasted in the session |
-| Finalized answers (Google Doc) | Yes, as `.docx` export | `public/files/RevOps_Take-Home_Piyush_Jain_answers.docx` is the source of truth for strategy |
-| Supporting calculations (Google Sheet) | Yes, as `.xlsx` export (18 tabs) | `public/files/RevOps_Take-Home_Piyush_Jain_workings.xlsx` |
+| Finalized answers (Google Doc) | Yes, as `.docx` export | The `.docx` export was the source of truth during the audit; the live Google Doc is now linked from the app sidebar |
+| Supporting calculations (Google Sheet) | Yes, as `.xlsx` export (18 tabs) | The live Google Sheet is now linked from the app sidebar |
 | Section 4 architecture diagram | Yes | `public/artefacts/s4-architecture.png` |
 | Section 5 CRM relationship diagram | Yes | `public/artefacts/s5-crm-relationships.png` |
 | Section 7 Signal Desk wireframe | Yes | `public/artefacts/s7-signal-desk-wireframe.png` |

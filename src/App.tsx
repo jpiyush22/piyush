@@ -112,25 +112,23 @@ export default function App() {
               </span>
             </button>
           ))}
-          <div className="nav-group">Downloads</div>
-          <a className="nav-item" href="files/RevOps_Take-Home_Piyush_Jain_answers.docx" download>
-            <span className="nav-icon">
-              <Icon name="download" size={18} />
-            </span>
-            <span className="meta">
-              <span className="name">Written answers</span>
-              <span className="preview" style={{ display: 'block' }}>.docx</span>
-            </span>
-          </a>
-          <a className="nav-item" href="files/RevOps_Take-Home_Piyush_Jain_workings.xlsx" download>
-            <span className="nav-icon">
-              <Icon name="download" size={18} />
-            </span>
-            <span className="meta">
-              <span className="name">Workings + calculations</span>
-              <span className="preview" style={{ display: 'block' }}>.xlsx · 18 tabs</span>
-            </span>
-          </a>
+          <div className="nav-group">Documents</div>
+          {[
+            ['Written answers', 'Google Doc · Sections 1–9', 'https://docs.google.com/document/d/15L-jy8GMusH9wN6dYntrvf-oc5ARC-o3UdWcCi7NzVs/edit?usp=sharing'],
+            ['Workings + calculations', 'Google Sheet · 18 tabs', 'https://docs.google.com/spreadsheets/d/1dp7BwEKd_ul0dVTo0s6LOdWJrBh1Iw81woCy0lO-s5g/edit?usp=sharing'],
+          ].map(([name, sub, href]) => (
+            <a key={href} className="nav-item" href={href} target="_blank" rel="noreferrer">
+              <span className="nav-icon">
+                <Icon name="arrowR" size={18} />
+              </span>
+              <span className="meta">
+                <span className="name">{name}</span>
+                <span className="preview" style={{ display: 'block' }}>
+                  {sub} ↗
+                </span>
+              </span>
+            </a>
+          ))}
         </div>
         <div className="nav-foot">
           <button className="btn sm" onClick={() => window.print()}>

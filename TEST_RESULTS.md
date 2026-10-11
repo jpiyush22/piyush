@@ -8,7 +8,7 @@ Run on 2026-10-11 in the cloud sandbox (Node 22.22.0, Linux), against commit-in-
 |---|---|---|
 | Type check (strict) | `npx tsc -b` | ✅ no errors |
 | Unit tests | `npm test` (Vitest 5.0.3) | ✅ **66 / 66 passed** (6 files) |
-| Browser end-to-end | `npm run test:e2e` (Playwright 1.56.1, Chromium 1194, 1440×900) | ✅ **11 / 11 passed** |
+| Browser end-to-end | `npm run test:e2e` (Playwright 1.56.1, Chromium 1194, 1440×900) | ✅ **12 / 12 passed** |
 | Production build | `npm run build` | ✅ built (JS ≈ 396 kB, 126 kB gzip) |
 | Dependency audit | `npm audit` | ✅ 0 vulnerabilities (after pinning `vitest@5.0.3`) |
 | Lint | — | ⚠️ No ESLint configured; TypeScript strict (`noUnusedLocals`/`Parameters`) is the static check |
@@ -24,7 +24,7 @@ Every e2e test also asserts **zero browser console errors and zero uncaught page
 - **crm (9):** 6 separate workspaces each with one subscription; Beauty Lounge seats 8/6/4/25 = 43; shared contact surfaced but no grouping; domain grouping refused; source links immutable; approval needs reviewer and evidence; verified-only roll-up with rejected links excluded; apply then rollback leaves source links untouched; unverified domain link flagged.
 - **drift (8):** deterministic per seed; **execution-based states identical with and without migrations**; edit rate rises only during the rollout; gradual drift caught by the 3-day check on day 2 (vs day 21 without a monitor); rolling baseline contaminated while frozen stays fixed; migrations more than double unsupported proxy recoveries, and system-caused recoveries are zero without migrations; impact analysis lists only affected (migrated) workspaces; no impact rows without migrations.
 
-## Browser end-to-end (11)
+## Browser end-to-end (12)
 
 1. Every section renders; sidebar search filters.
 2. **Step 1:** KPIs 536 / 41.0% / 55.1% / 14.1 pp; blended shows 44.2% of Onboarding; split shows "SSF has no Sales stage"; SSF drop-off 439; reconciliation all ✓; proposed-target wording present.
@@ -37,6 +37,7 @@ Every e2e test also asserts **zero browser console errors and zero uncaught page
 9. Persistence across reload, and reset.
 10. Guided demo walks steps 1–9 across sections and closes.
 11. Section 8 embeds both Loom walkthrough videos (embed URLs checked; playback not verifiable from the sandbox).
+12. Sidebar Documents link to the live Google Doc and Sheet (new tab); no Downloads section remains.
 
 ## Manual browser verification
 

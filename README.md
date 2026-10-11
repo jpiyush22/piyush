@@ -19,7 +19,7 @@ An interactive app that presents my full answer to the Superchat RevOps Engineer
 | 8 · Show your working | Two embedded Loom walkthrough videos (edit `VIDEOS` in `src/sections/S8S9.tsx`), guided 9-step demo, assumptions and open questions |
 | 9 · Feedback | Candid notes on the challenge |
 
-The original submission files (answers `.docx`, workings `.xlsx`, and the diagram PNGs) are in `public/files` and `public/artefacts`, and they're downloadable from the sidebar.
+The sidebar's Documents links open the written answers (Google Doc) and workings (Google Sheet). The original diagram PNGs are in `public/artefacts`.
 
 ## Run it
 
@@ -27,7 +27,7 @@ The original submission files (answers `.docx`, workings `.xlsx`, and the diagra
 npm install
 npm run dev        # local dev server
 npm test           # 66 unit tests (Vitest) for the domain logic
-npm run test:e2e   # 11 browser journeys (Playwright, Chromium)
+npm run test:e2e   # 12 browser journeys (Playwright, Chromium)
 npm run build      # type check + static build in dist/
 ```
 

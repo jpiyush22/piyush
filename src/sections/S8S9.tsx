@@ -166,7 +166,7 @@ export function S9Feedback() {
         </Answer>
       </QA>
       <Callout title="Files.">
-        The original answer document and working spreadsheet are in the sidebar under Downloads.
+        The written answers (Google Doc) and working spreadsheet (Google Sheet) are linked in the sidebar under Documents.
       </Callout>
     </>
   );

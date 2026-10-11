@@ -273,3 +273,13 @@ test('Section 8 embeds both walkthrough videos', async ({ page }) => {
   await expect(frames.nth(0)).toHaveAttribute('src', 'https://www.loom.com/embed/bc819e8c31154fef80e374f939e7663f');
   await expect(frames.nth(1)).toHaveAttribute('src', 'https://www.loom.com/embed/aa400fbaa83c4db986b0ca700fecb8ab');
 });
+
+test('sidebar Documents link to the Google Doc and Sheet in a new tab', async ({ page }) => {
+  await page.goto('/');
+  const doc = page.locator('a.nav-item', { hasText: 'Written answers' });
+  const sheet = page.locator('a.nav-item', { hasText: 'Workings + calculations' });
+  await expect(doc).toHaveAttribute('href', /docs\.google\.com\/document\/d\/15L-jy8GMusH9wN6dYntrvf-oc5ARC-o3UdWcCi7NzVs/);
+  await expect(sheet).toHaveAttribute('href', /docs\.google\.com\/spreadsheets\/d\/1dp7BwEKd_ul0dVTo0s6LOdWJrBh1Iw81woCy0lO-s5g/);
+  await expect(doc).toHaveAttribute('target', '_blank');
+  await expect(page.getByText('Downloads', { exact: true })).toHaveCount(0);
+});

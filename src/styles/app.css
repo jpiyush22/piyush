@@ -1641,3 +1641,82 @@ details.more > div {
 a.nav-item:hover {
   text-decoration: none;
 }
+
+/* Sidebar on brand navy */
+.nav {
+  background: var(--navy);
+  border-right: 0;
+  color: #fff;
+}
+.nav-head,
+.nav-foot {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.nav .nav-title,
+.nav .nav-profile-name,
+.nav-item .name {
+  color: #fff;
+}
+.nav .nav-sub,
+.nav-item .preview,
+.nav-item .tag {
+  color: #a9bed6;
+}
+.nav-profile {
+  margin-top: 0;
+}
+.nav-profile img {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25);
+}
+.nav-search {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #a9bed6;
+}
+.nav-search input {
+  color: #fff;
+}
+.nav-search input::placeholder {
+  color: #a9bed6;
+}
+.nav-group {
+  color: #8aa3bf;
+}
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+.nav-item[aria-current='page'] {
+  background: rgba(255, 255, 255, 0.12);
+}
+.nav-icon {
+  background: rgba(255, 255, 255, 0.08);
+  color: #d6e4f3;
+}
+.nav-item[aria-current='page'] .nav-icon {
+  background: var(--brand);
+  color: #fff;
+}
+.nav-item .name .num {
+  color: var(--brand-light);
+}
+.nav-foot .btn {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+.nav-foot .btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+.nav-list::-webkit-scrollbar {
+  width: 8px;
+}
+.nav-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}

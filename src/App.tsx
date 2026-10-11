@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { BrandLogo, Icon } from './components/ui';
+import { BrandMark, Icon } from './components/ui';
 import { SECTIONS, type SectionId } from './sections/registry';
 import Overview from './sections/Overview';
 import S1Funnel from './sections/S1Funnel';
@@ -65,8 +65,13 @@ export default function App() {
 
       <nav className="nav" aria-label="Sections">
         <div className="nav-head">
-          <BrandLogo className="nav-logo" />
-          <div className="nav-title">RevOps take-home</div>
+          <div className="nav-brand">
+            <BrandMark size={32} />
+            <div>
+              <div className="nav-title">RevOps take-home</div>
+              <div className="nav-sub">Prepared for Superchat</div>
+            </div>
+          </div>
           <div className="nav-profile">
             <img src="piyush.jpg" alt="Piyush Jain" />
             <div>
@@ -105,7 +110,7 @@ export default function App() {
               <Icon name="download" size={18} />
             </span>
             <span className="meta">
-              <span className="name" style={{ color: 'var(--ink)' }}>Written answers</span>
+              <span className="name">Written answers</span>
               <span className="preview" style={{ display: 'block' }}>.docx</span>
             </span>
           </a>
@@ -114,7 +119,7 @@ export default function App() {
               <Icon name="download" size={18} />
             </span>
             <span className="meta">
-              <span className="name" style={{ color: 'var(--ink)' }}>Workings + calculations</span>
+              <span className="name">Workings + calculations</span>
               <span className="preview" style={{ display: 'block' }}>.xlsx · 18 tabs</span>
             </span>
           </a>

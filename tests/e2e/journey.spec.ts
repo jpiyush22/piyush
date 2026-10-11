@@ -292,5 +292,8 @@ test('profile card with LinkedIn link appears at the bottom of every page', asyn
     await expect(card).toContainText('Revenue Operations Engineer | AI & Automation');
     await expect(card.getByRole('link', { name: /View LinkedIn profile/ })).toHaveAttribute('href', 'https://www.linkedin.com/in/jpiyush12/');
   }
-  await expect(page.locator('a.nav-profile')).toHaveAttribute('href', 'https://www.linkedin.com/in/jpiyush12/');
+  const navProfile = page.getByTestId('nav-profile');
+  await expect(navProfile).toHaveAttribute('href', 'https://www.linkedin.com/in/jpiyush12/');
+  await expect(navProfile).toContainText('Revenue Operations Engineer | AI & Automation');
+  await expect(page.getByRole('button', { name: /Print section/ })).toHaveCount(0);
 });

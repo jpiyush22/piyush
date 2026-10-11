@@ -86,13 +86,6 @@ export default function App() {
               <div className="nav-sub">Prepared for Superchat</div>
             </div>
           </div>
-          <a className="nav-profile" href={PROFILE.linkedin} target="_blank" rel="noreferrer" title="Open LinkedIn profile">
-            <img src="piyush.jpg" alt={PROFILE.name} />
-            <div>
-              <div className="nav-profile-name">{PROFILE.name}</div>
-              <div className="nav-sub">View LinkedIn profile ↗</div>
-            </div>
-          </a>
           <label className="nav-search">
             <Icon name="search" size={16} />
             <input placeholder="Search sections" value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Search sections" />
@@ -137,9 +130,14 @@ export default function App() {
           ))}
         </div>
         <div className="nav-foot">
-          <button className="btn sm" onClick={() => window.print()}>
-            <Icon name="print" size={16} /> Print section
-          </button>
+          <a className="nav-profile" href={PROFILE.linkedin} target="_blank" rel="noreferrer" title="Open LinkedIn profile" data-testid="nav-profile">
+            <img src="piyush.jpg" alt={PROFILE.name} />
+            <div style={{ minWidth: 0 }}>
+              <div className="nav-profile-name">{PROFILE.name}</div>
+              <div className="nav-sub">{PROFILE.headline}</div>
+              <div className="nav-link">View LinkedIn profile ↗</div>
+            </div>
+          </a>
         </div>
       </nav>
 

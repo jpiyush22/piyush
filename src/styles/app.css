@@ -2107,3 +2107,32 @@ a.nav-profile:hover {
     justify-content: center;
   }
 }
+
+/* Sidebar footer profile */
+.nav-foot {
+  display: block;
+  padding: 12px 12px 14px;
+}
+.nav-foot .nav-profile {
+  margin: 0;
+  padding: 10px;
+  align-items: center;
+  width: 100%;
+}
+.nav-foot .nav-profile img {
+  width: 44px;
+  height: 44px;
+}
+.nav-foot .nav-sub {
+  font-size: 12px;
+  line-height: 1.35;
+}
+.nav-link {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand-light);
+  margin-top: 2px;
+}
+.nav-brand {
+  margin-bottom: 14px;
+}

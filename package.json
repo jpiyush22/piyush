@@ -1,0 +1,24 @@
+{
+  "name": "superchat-revops-take-home",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "RevOps Engineer take-home challenge for Superchat by Piyush Jain, as an interactive app",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -b"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "@vitejs/plugin-react": "4.7.0",
+    "typescript": "5.9.3",
+    "vite": "6.4.4"
+  }
+}

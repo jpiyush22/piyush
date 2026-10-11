@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { Answer, BlockTitle, Callout, Card, DataTable, KV, Pill, SectionHero, Stat } from '../components/ui';
+import EnginePlayground from './EnginePlayground';
+import { FUNNEL, METRICS as M, pct1 } from '../domain/funnel';
+import { Prov } from '../components/ui';
 
 type Timing = 'realtime' | 'batch4h' | 'daily' | 'triggered' | 'feedback';
 
@@ -10,6 +13,11 @@ const TIMING: Record<Timing, { label: string; color: string; dash?: string; desc
   triggered: { label: 'Event-triggered', color: '#0d2b4d', dash: '2 4', desc: 'HubSpot property change → Make/n8n' },
   feedback: { label: 'Feedback loop', color: '#94a3b8', dash: '7 5', desc: 'Outcomes back to the warehouse' },
 };
+
+/** Seconds for one data "packet" to travel an edge: faster for real-time, slower for batch. */
+const SPEED: Record<Timing, number> = { realtime: 1.6, triggered: 2.2, batch4h: 3.6, daily: 5, feedback: 6 };
+const SPEED_CLASS: Record<Timing, string> = { realtime: 'flow-fast', triggered: 'flow-fast', batch4h: '', daily: 'flow-slow', feedback: 'flow-slow' };
+const motionOk = typeof window === 'undefined' || !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
 interface Node {
   id: string;
@@ -356,7 +364,19 @@ function Architecture() {
             const d = e.pts.map((p, j) => `${j ? 'L' : 'M'}${p[0]} ${p[1]}`).join(' ');
             return (
               <g key={i} opacity={dim ? 0.12 : 1}>
-                <path d={d} className="flow-line" stroke={TIMING[e.t].color} strokeWidth={hl ? 3 : 2} strokeDasharray={TIMING[e.t].dash} markerEnd={`url(#ar-${e.t})`} />
+                <path
+                  d={d}
+                  className={`flow-line ${TIMING[e.t].dash && !dim ? `flow-anim ${SPEED_CLASS[e.t]}` : ''}`}
+                  stroke={TIMING[e.t].color}
+                  strokeWidth={hl ? 3 : 2}
+                  strokeDasharray={TIMING[e.t].dash}
+                  markerEnd={`url(#ar-${e.t})`}
+                />
+                {!dim && motionOk && (
+                  <circle r={hl ? 4.5 : 3.5} fill={TIMING[e.t].color} stroke="var(--surface)" strokeWidth={1.5}>
+                    <animateMotion dur={`${SPEED[e.t]}s`} repeatCount="indefinite" path={d} begin={`${(i % 5) * 0.35}s`} />
+                  </circle>
+                )}
                 {e.label && (
                   <text x={e.lx} y={e.ly} fontSize="11" fontWeight={650} fill={TIMING[e.t].color}>
                     {e.label}
@@ -462,12 +482,16 @@ export default function S4System() {
             <Pill tone="brand">Goal: SSF adoption 41% → ~46%</Pill>
             <Pill tone="unknown">Missing data = UNKNOWN</Pill>
             <Pill>Daily is fresh enough</Pill>
-            <Pill tone="ok">Shippable alone in 2 weeks</Pill>
+            <Pill tone="ok">First slice: 2 weeks, solo</Pill>
+            <Prov kind="proposed" />
           </>
         }
       />
 
+      <div id="s4-arch" />
       <Architecture />
+      <div style={{ height: 16 }} id="s4-engine" />
+      <EnginePlayground />
 
       <div style={{ height: 28 }} />
       <BlockTitle>The signal</BlockTitle>
@@ -478,14 +502,14 @@ export default function S4System() {
         ]}
       />
       <div className="grid c4" style={{ marginBottom: 16 }}>
-        <Stat label="SSF adoption baseline" value="41.0%" note="305 / 744 (observed)" />
+        <Stat label="SSF adoption baseline" value={pct1(M.ssf.adoption.rate)} note={`${M.ssf.adoption.numerator} / ${M.ssf.adoption.denominator} (case study)`} />
         <Stat label="Pilot target" value="~46%" note="+5 pp, experiment, not forecast" accent />
-        <Stat label="Sales-led baseline" value="55.1%" note="Different journey, not a causal comparator" />
+        <Stat label="Sales-led baseline" value={pct1(M.sales.adoption.rate)} note="Different journey, not a causal comparator" />
         <Stat label="Account A lead time" value="38 days" note="Hypothetical: d33 review vs d71 cancel" />
       </div>
       <Answer label="The outcome I'd focus on">
         <p>
-          The clearest measured problem is onboarding → adoption: only 424 of 960 accounts (44.2%) progress, and SSF is at 305 of 744 (41.0%) versus 55.1% for Sales-led. I'd focus
+          The clearest measured problem is onboarding → adoption: only {FUNNEL.blended.Adoption} of {FUNNEL.blended.Onboarding} accounts ({pct1(M.blended.adoption.rate)}) progress, and SSF is at {M.ssf.adoption.numerator} of {M.ssf.adoption.denominator} ({pct1(M.ssf.adoption.rate)}) versus {pct1(M.sales.adoption.rate)} for Sales-led. I'd focus
           the first pilot on SSF adoption, with a test target of lifting its 90-day adoption rate from 41% to about 46% (+5 percentage points). That's a proposed experiment target,
           not a forecast. I'd also watch paid downgrades and cancellations, but two weeks is too short to prove a 90-day improvement.
         </p>

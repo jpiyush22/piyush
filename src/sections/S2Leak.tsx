@@ -1,44 +1,10 @@
-import { useState } from 'react';
-import { Answer, BlockTitle, Callout, Card, DataTable, KV, Pill, QA, SectionHero, Stat } from '../components/ui';
+import { useMemo, useState } from 'react';
+import { Answer, BlockTitle, Callout, Card, DataTable, KV, Pill, Prov, QA, SectionHero, Stat } from '../components/ui';
+import { ACCOUNTS as PROFILES, ACCOUNT_A_EVENTS, ACCOUNT_A_METRICS as AM, categoryOf, type EventCategory, type EvidenceKind, type ProductEvent } from '../domain/events';
+import { RULES, accountASnapshot, scoreWorkspace, type RiskResult } from '../domain/risk';
+import { useApp } from '../state/store';
 
-interface Ev {
-  day: number;
-  name: string;
-  props: string;
-  lane: Lane;
-}
-type Lane = 'account' | 'messaging' | 'users' | 'campaign' | 'workflow' | 'template' | 'ai';
-
-export const ACCOUNT_A: Ev[] = [
-  { day: 0, name: 'account_created', props: 'plan=pro; seats=42; motion=self_signup; region=DACH', lane: 'account' },
-  { day: 0, name: 'message_activity_weekly', props: 'week=1; messages_sent=88; messages_received=184', lane: 'messaging' },
-  { day: 0, name: 'user_invited', props: 'count=6', lane: 'users' },
-  { day: 1, name: 'user_invited', props: 'count=9', lane: 'users' },
-  { day: 3, name: 'campaign_sent', props: 'first_campaign=true', lane: 'campaign' },
-  { day: 4, name: 'workflow_created', props: 'workflow_id=wf_01', lane: 'workflow' },
-  { day: 5, name: 'workflow_created', props: 'workflow_id=wf_02', lane: 'workflow' },
-  { day: 6, name: 'template_created', props: 'template_id=tpl_01', lane: 'template' },
-  { day: 7, name: 'message_activity_weekly', props: 'week=2; messages_sent=91; messages_received=191', lane: 'messaging' },
-  { day: 7, name: 'workflow_created', props: 'workflow_id=wf_03', lane: 'workflow' },
-  { day: 8, name: 'ai_agent_created', props: 'agent_id=ag_01', lane: 'ai' },
-  { day: 9, name: 'workflow_edited', props: 'workflow_id=wf_02', lane: 'workflow' },
-  { day: 10, name: 'ai_agent_triggered', props: 'agent_id=ag_01; runs=4', lane: 'ai' },
-  { day: 12, name: 'ai_agent_triggered', props: 'agent_id=ag_01; runs=2', lane: 'ai' },
-  { day: 14, name: 'message_activity_weekly', props: 'week=3; messages_sent=93; messages_received=195', lane: 'messaging' },
-  { day: 14, name: 'workflow_edited', props: 'workflow_id=wf_01', lane: 'workflow' },
-  { day: 19, name: 'workflow_edited', props: 'workflow_id=wf_03', lane: 'workflow' },
-  { day: 21, name: 'message_activity_weekly', props: 'week=4; messages_sent=90; messages_received=189', lane: 'messaging' },
-  { day: 28, name: 'message_activity_weekly', props: 'week=5; messages_sent=89; messages_received=186', lane: 'messaging' },
-  { day: 35, name: 'message_activity_weekly', props: 'week=6; messages_sent=92; messages_received=193', lane: 'messaging' },
-  { day: 42, name: 'message_activity_weekly', props: 'week=7; messages_sent=90; messages_received=189', lane: 'messaging' },
-  { day: 49, name: 'message_activity_weekly', props: 'week=8; messages_sent=91; messages_received=191', lane: 'messaging' },
-  { day: 55, name: 'user_invited', props: 'count=2', lane: 'users' },
-  { day: 56, name: 'message_activity_weekly', props: 'week=9; messages_sent=90; messages_received=189', lane: 'messaging' },
-  { day: 63, name: 'message_activity_weekly', props: 'week=10; messages_sent=88; messages_received=184', lane: 'messaging' },
-  { day: 71, name: 'subscription_cancelled', props: '', lane: 'account' },
-];
-
-const LANES: { id: Lane; label: string; color: string }[] = [
+const LANES: { id: EventCategory; label: string; color: string }[] = [
   { id: 'messaging', label: 'Core messaging (sent/wk)', color: 'var(--brand)' },
   { id: 'campaign', label: 'Campaign', color: 'var(--navy)' },
   { id: 'workflow', label: 'Workflows', color: 'var(--brand)' },
@@ -48,113 +14,359 @@ const LANES: { id: Lane; label: string; color: string }[] = [
   { id: 'account', label: 'Account', color: 'var(--risk)' },
 ];
 
-function Timeline() {
-  const [hover, setHover] = useState<Ev | null>(null);
-  const [showWatch, setShowWatch] = useState(true);
+const evProps = (e: ProductEvent) =>
+  Object.entries(e.props)
+    .map(([k, v]) => `${k}=${v}`)
+    .join('; ');
+
+function Timeline({ lanes, selected, onSelect, evalDay }: { lanes: Set<EventCategory>; selected: number | null; onSelect: (i: number) => void; evalDay: number }) {
   const W = 980;
   const left = 170;
   const right = 20;
+  const shown = LANES.filter((l) => lanes.has(l.id));
   const laneH = 46;
-  const top = 26;
-  const H = top + LANES.length * laneH + 30;
+  const top = 30;
+  const H = top + Math.max(shown.length, 1) * laneH + 34;
   const x = (d: number) => left + (d / 75) * (W - left - right);
-  const laneY = (l: Lane) => top + LANES.findIndex((L) => L.id === l) * laneH + laneH / 2;
+  const laneY = (l: EventCategory) => top + shown.findIndex((L) => L.id === l) * laneH + laneH / 2;
+  const has = (l: EventCategory) => lanes.has(l);
+
+  return (
+    <div className="svg-wrap">
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Account A event timeline from day 0 to day 71">
+        {[0, 7, 14, 21, 28, 35, 42, 49, 56, 63, 70].map((d) => (
+          <g key={d}>
+            <line x1={x(d)} x2={x(d)} y1={top - 6} y2={H - 26} stroke="var(--line)" />
+            <text x={x(d)} y={H - 10} fontSize="11" textAnchor="middle" fill="var(--ink-3)">
+              d{d}
+            </text>
+          </g>
+        ))}
+        {shown.map((L) => (
+          <g key={L.id}>
+            <text x={10} y={laneY(L.id) + 4} fontSize="12.5" fill="var(--ink-2)" fontWeight={600}>
+              {L.label}
+            </text>
+            <line x1={left} x2={W - right} y1={laneY(L.id)} y2={laneY(L.id)} stroke="var(--line)" strokeDasharray="2 4" />
+          </g>
+        ))}
+        {has('workflow') && has('ai') && (
+          <rect className="anim-rise" x={x(4)} y={laneY('workflow') - 16} width={x(19) - x(4)} height={Math.abs(laneY('ai') - laneY('workflow')) + 32} rx={10} fill="var(--brand-light)" opacity={0.3} />
+        )}
+        {/* Low-confidence day-33 candidate: 14 days after the last recorded edit */}
+        <g>
+          <line x1={x(33)} x2={x(33)} y1={top - 12} y2={H - 26} stroke="var(--watch)" strokeWidth={2} strokeDasharray="5 4" className="flow-anim flow-slow" />
+          <rect x={x(33) + 6} y={top - 26} width={250} height={20} rx={6} fill="var(--watch-soft)" />
+          <text x={x(33) + 12} y={top - 12} fontSize="11.5" fill="var(--watch)" fontWeight={700}>
+            d33 candidate · low confidence · human review only
+          </text>
+        </g>
+        {/* Engine evaluation day */}
+        <line x1={x(evalDay)} x2={x(evalDay)} y1={top - 6} y2={H - 26} stroke="var(--brand)" strokeWidth={2} />
+        <circle cx={x(evalDay)} cy={H - 26} r={5} fill="var(--brand)" />
+        <circle cx={x(evalDay)} cy={H - 26} r={6} fill="none" stroke="var(--brand)" className="pulse" />
+        {ACCOUNT_A_EVENTS.map((e, i) => {
+          const cat = categoryOf(e.name);
+          if (!lanes.has(cat)) return null;
+          const L = LANES.find((l) => l.id === cat)!;
+          const cx = x(e.day);
+          const cy = laneY(cat);
+          const sel = selected === i;
+          const delay = { animationDelay: `${i * 35}ms` };
+          if (cat === 'messaging') {
+            const sent = Number(e.props.messages_sent);
+            const h = ((sent - 80) / 15) * 30;
+            return (
+              <rect
+                key={i}
+                className="anim-rise"
+                x={cx - 9}
+                y={cy + 14 - h}
+                width={18}
+                height={h}
+                rx={3}
+                fill={L.color}
+                opacity={sel ? 1 : 0.75}
+                stroke={sel ? 'var(--navy)' : 'none'}
+                strokeWidth={2}
+                onClick={() => onSelect(i)}
+                onKeyDown={(k) => k.key === 'Enter' && onSelect(i)}
+                tabIndex={0}
+                role="button"
+                aria-label={`Day ${e.day} ${e.name}`}
+                style={{ cursor: 'pointer', ...delay }}
+              />
+            );
+          }
+          const hollow = e.name.endsWith('edited') || e.name.endsWith('triggered');
+          return (
+            <g
+              key={i}
+              className="anim-rise"
+              onClick={() => onSelect(i)}
+              onKeyDown={(k) => k.key === 'Enter' && onSelect(i)}
+              tabIndex={0}
+              role="button"
+              aria-label={`Day ${e.day} ${e.name}`}
+              style={{ cursor: 'pointer', ...delay }}
+            >
+              {e.name === 'subscription_cancelled' ? (
+                <path d={`M${cx - 8} ${cy - 8} L${cx + 8} ${cy + 8} M${cx + 8} ${cy - 8} L${cx - 8} ${cy + 8}`} stroke={L.color} strokeWidth={3.5} strokeLinecap="round" />
+              ) : (
+                <circle cx={cx} cy={cy} r={sel ? 9 : 7} fill={hollow ? 'var(--surface)' : L.color} stroke={sel ? 'var(--navy)' : L.color} strokeWidth={sel ? 3 : 2.5} />
+              )}
+            </g>
+          );
+        })}
+      </svg>
+    </div>
+  );
+}
+
+const KIND_META: Record<EvidenceKind, { title: string; tone: 'brand' | 'outline' | 'watch' | 'ok' }> = {
+  observed: { title: 'Observed evidence', tone: 'brand' },
+  inferred: { title: 'Inferred possibility', tone: 'outline' },
+  missing: { title: 'Missing information', tone: 'watch' },
+  proposed: { title: 'Proposed next step', tone: 'ok' },
+};
+
+const STATE_TONE: Record<string, 'risk' | 'watch' | 'ok' | 'unknown' | 'outline'> = {
+  'AT RISK': 'risk',
+  WATCH: 'watch',
+  HEALTHY: 'ok',
+  RECOVERED: 'ok',
+  UNKNOWN: 'unknown',
+  EXCLUDED: 'outline',
+};
+
+export function RiskResultCard({ r }: { r: RiskResult }) {
+  return (
+    <div className="card anim-rise" style={{ background: 'var(--surface-2)' }} data-testid="risk-result">
+      <div className="row-wrap" style={{ justifyContent: 'space-between' }}>
+        <div className="row-wrap">
+          <Pill tone={STATE_TONE[r.state]}>{r.state}</Pill>
+          <Pill tone={r.confidence === 'HIGH' ? 'ok' : 'unknown'}>Confidence {r.confidence}</Pill>
+          <Pill tone="outline">Queue: {r.queue.replace('_', ' ')}</Pill>
+        </div>
+        <span className="tiny muted">
+          {r.workspaceId} · model {r.modelVersion} · as-of day {r.asOfDay} · source {r.sourceFreshnessHours}h old
+        </span>
+      </div>
+      <p className="small" style={{ margin: '12px 0' }}>
+        {r.explanation}
+      </p>
+      <div className="row-wrap" style={{ marginBottom: 12 }}>
+        <span className="small">
+          <strong>Reason codes:</strong>
+        </span>
+        {r.reasons.map((x) => (
+          <code key={x}>{x}</code>
+        ))}
+      </div>
+      <DataTable
+        head={['Evidence', 'Value', 'Day', 'Source', 'Supports risk?']}
+        rows={r.evidence.map((e) => [e.label, e.value, e.day ?? '—', e.source, e.supportsRisk ? 'yes' : 'no'])}
+      />
+      <p className="small" style={{ marginTop: 10 }}>
+        <strong>Proposed next step:</strong>{' '}
+        {
+          {
+            csx_task: 'Human review in Signal Desk, then a guarded CSx task.',
+            ssf_nudge: 'Human review in Signal Desk, then a guarded SSF nudge with approved content.',
+            data_quality_review: 'Data-quality review. No customer action.',
+            human_review_only: 'Human review only. No customer outreach from an edit-recency proxy.',
+            none: 'None.',
+          }[r.proposedAction]
+        }{' '}
+        <span className="muted">Review-eligible for customer action: {r.reviewEligible ? 'yes' : 'no'}.</span>
+      </p>
+    </div>
+  );
+}
+
+function AccountExplorer() {
+  const { openDq, state } = useApp();
+  const [acct, setAcct] = useState<'A' | 'B' | 'C' | 'D' | 'E'>('A');
+  const [lanes, setLanes] = useState<Set<EventCategory>>(new Set(LANES.map((l) => l.id)));
+  const [selected, setSelected] = useState<number | null>(null);
+  const [query, setQuery] = useState('');
+  const [evalDay, setEvalDay] = useState(33);
+  const [run, setRun] = useState<RiskResult | null>(null);
+  const profile = PROFILES.find((p) => p.id === acct)!;
+  const dqOpen = state.dq.some((d) => d.workspaceId === 'ACCOUNT-A' && d.status === 'open');
+
+  const rows = useMemo(
+    () =>
+      ACCOUNT_A_EVENTS.map((e, i) => ({ e, i })).filter(
+        ({ e }) => lanes.has(categoryOf(e.name)) && (`${e.name} ${evProps(e)} d${e.day}`.toLowerCase().includes(query.trim().toLowerCase())),
+      ),
+    [lanes, query],
+  );
+
+  const toggle = (l: EventCategory) =>
+    setLanes((s) => {
+      const n = new Set(s);
+      if (n.has(l)) n.delete(l);
+      else n.add(l);
+      return n;
+    });
+
+  const sel = selected != null ? ACCOUNT_A_EVENTS[selected] : null;
 
   return (
     <Card
-      title="Account A: raw events, plotted"
+      title="Account explorer"
       right={
-        <label className="row-wrap small" style={{ cursor: 'pointer' }}>
-          <input type="checkbox" checked={showWatch} onChange={(e) => setShowWatch(e.target.checked)} />
-          Show candidate 14-day review point
-        </label>
+        <div className="seg" role="group" aria-label="Select account">
+          {PROFILES.map((p) => (
+            <button key={p.id} aria-pressed={acct === p.id} onClick={() => setAcct(p.id)}>
+              Account {p.id}
+            </button>
+          ))}
+        </div>
       }
     >
-      <div className="svg-wrap">
-        <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Account A event timeline from day 0 to day 71">
-          {[0, 7, 14, 21, 28, 35, 42, 49, 56, 63, 70].map((d) => (
-            <g key={d}>
-              <line x1={x(d)} x2={x(d)} y1={top - 6} y2={H - 26} stroke="var(--line)" />
-              <text x={x(d)} y={H - 10} fontSize="11" textAnchor="middle" fill="var(--ink-3)">
-                d{d}
-              </text>
-            </g>
-          ))}
-          {LANES.map((L) => (
-            <g key={L.id}>
-              <text x={10} y={laneY(L.id) + 4} fontSize="12.5" fill="var(--ink-2)" fontWeight={600}>
-                {L.label}
-              </text>
-              <line x1={left} x2={W - right} y1={laneY(L.id)} y2={laneY(L.id)} stroke="var(--line)" strokeDasharray="2 4" />
-            </g>
-          ))}
-          {/* Depth-feature activity window, then silence */}
-          <rect x={x(4)} y={laneY('workflow') - 16} width={x(19) - x(4)} height={laneY('ai') - laneY('workflow') + 32} rx={10} fill="var(--brand-light)" opacity={0.3} />
-          {showWatch && (
-            <g>
-              <line x1={x(33)} x2={x(33)} y1={top - 10} y2={H - 26} stroke="var(--watch)" strokeWidth={2} strokeDasharray="5 4" />
-              <rect x={x(33) + 6} y={top - 18} width={168} height={20} rx={6} fill="var(--watch-soft)" />
-              <text x={x(33) + 12} y={top - 4} fontSize="11.5" fill="var(--watch)" fontWeight={700}>
-                d33 · 14d with no recorded edit
-              </text>
-              <line x1={x(33)} x2={x(71)} y1={H - 34} y2={H - 34} stroke="var(--watch)" strokeWidth={1.5} />
-              <text x={(x(33) + x(71)) / 2} y={H - 38} fontSize="11" textAnchor="middle" fill="var(--watch)" fontWeight={600}>
-                38 days before cancellation (hypothetical lead time)
-              </text>
-            </g>
+      <div className="row-wrap" style={{ marginBottom: 12 }}>
+        <Pill tone="outline">
+          {profile.motion} · {profile.seats} seats
+        </Pill>
+        <Pill tone={profile.tone}>{profile.outcome}</Pill>
+        <Prov kind="case-study" />
+        <span className="tiny muted">{profile.rawEvents ? 'Raw event extract supplied (26 events)' : 'Narrative only: no raw events were supplied for this account'}</span>
+      </div>
+      <blockquote className="quote">“{profile.narrative}”</blockquote>
+      <div className="grid c4" style={{ marginTop: 14 }} data-testid="evidence-split">
+        {(['observed', 'inferred', 'missing', 'proposed'] as EvidenceKind[]).map((k) => (
+          <div key={k} className="card" style={{ padding: 14, background: 'var(--surface-2)' }}>
+            <Pill tone={KIND_META[k].tone}>{KIND_META[k].title}</Pill>
+            <ul className="small" style={{ margin: '8px 0 0', paddingLeft: 18 }}>
+              {profile.evidence
+                .filter((e) => e.kind === k)
+                .map((e) => (
+                  <li key={e.text}>{e.text}</li>
+                ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      {acct === 'A' ? (
+        <>
+          <div className="row-wrap" style={{ margin: '18px 0 8px' }}>
+            <span className="small muted">Show lanes:</span>
+            {LANES.map((l) => (
+              <label key={l.id} className="chip">
+                <input type="checkbox" checked={lanes.has(l.id)} onChange={() => toggle(l.id)} />
+                {l.label}
+              </label>
+            ))}
+          </div>
+          {lanes.size === 0 ? (
+            <div className="empty">No lanes selected. Tick at least one lane to see events.</div>
+          ) : (
+            <Timeline lanes={lanes} selected={selected} onSelect={setSelected} evalDay={evalDay} />
           )}
-          {ACCOUNT_A.map((e, i) => {
-            const L = LANES.find((l) => l.id === e.lane)!;
-            const cx = x(e.day);
-            const cy = laneY(e.lane);
-            if (e.lane === 'messaging') {
-              const sent = Number(/messages_sent=(\d+)/.exec(e.props)?.[1] ?? 0);
-              const h = ((sent - 80) / 15) * 30;
-              return (
-                <rect
-                  key={i}
-                  x={cx - 9}
-                  y={cy + 14 - h}
-                  width={18}
-                  height={h}
-                  rx={3}
-                  fill={L.color}
-                  opacity={hover === e ? 1 : 0.75}
-                  onMouseEnter={() => setHover(e)}
-                  onFocus={() => setHover(e)}
-                  tabIndex={0}
-                  style={{ cursor: 'pointer' }}
-                />
-              );
-            }
-            const isEdit = e.name.endsWith('edited') || e.name.endsWith('triggered');
-            const isEnd = e.name === 'subscription_cancelled';
-            return (
-              <g key={i} onMouseEnter={() => setHover(e)} onFocus={() => setHover(e)} tabIndex={0} style={{ cursor: 'pointer' }}>
-                {isEnd ? (
-                  <path d={`M${cx - 8} ${cy - 8} L${cx + 8} ${cy + 8} M${cx + 8} ${cy - 8} L${cx - 8} ${cy + 8}`} stroke={L.color} strokeWidth={3.5} strokeLinecap="round" />
-                ) : (
-                  <circle cx={cx} cy={cy} r={hover === e ? 9 : 7} fill={isEdit ? 'var(--surface)' : L.color} stroke={L.color} strokeWidth={2.5} />
-                )}
-              </g>
-            );
-          })}
-        </svg>
-      </div>
-      <div className="tl-tooltip" aria-live="polite">
-        {hover ? (
-          <>
-            <strong>Day {hover.day}</strong> · <code>{hover.name}</code> {hover.props && <span className="muted">{hover.props}</span>}
-          </>
-        ) : (
-          <span className="muted">Hover or tab through a marker to see the raw event. Filled = created/sent, hollow = edited/triggered, bars = weekly messages sent.</span>
-        )}
-      </div>
+          <div className="tl-tooltip" aria-live="polite">
+            {sel ? (
+              <>
+                <strong>Day {sel.day}</strong> · <code>{sel.name}</code> <span className="muted">{evProps(sel) || '(no properties)'}</span> ·{' '}
+                <span className="tiny muted">raw extract row {selected! + 1} of 26</span>
+              </>
+            ) : (
+              <span className="muted">Click a marker (or a table row) to inspect the raw event. Filled = created/sent, hollow = edited/triggered, bars = weekly messages sent.</span>
+            )}
+          </div>
+
+          <div className="grid c2" style={{ marginTop: 16 }}>
+            <div>
+              <label className="nav-search" style={{ background: 'var(--surface-3)', borderColor: 'var(--line)', color: 'var(--ink-3)', marginBottom: 8 }}>
+                <input placeholder="Filter events (e.g. workflow, d19, runs=)" value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Filter events" style={{ color: 'var(--ink)' }} />
+              </label>
+              <div className="table-wrap" style={{ maxHeight: 320, overflow: 'auto' }}>
+                <table>
+                  <thead>
+                    <tr>
+                      <th className="num">Day</th>
+                      <th>Event</th>
+                      <th>Properties</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rows.length === 0 && (
+                      <tr>
+                        <td colSpan={3} className="muted">
+                          No events match this filter.
+                        </td>
+                      </tr>
+                    )}
+                    {rows.map(({ e, i }) => (
+                      <tr key={i} onClick={() => setSelected(i)} style={{ cursor: 'pointer', background: selected === i ? 'var(--brand-softer)' : undefined }}>
+                        <td className="num">{e.day}</td>
+                        <td>
+                          <code>{e.name}</code>
+                        </td>
+                        <td className="tiny">{evProps(e)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p className="tiny muted" style={{ marginTop: 6 }}>
+                {rows.length} of 26 events shown. Execution events in the extract: <strong>{AM.executionEvents}</strong>, so execution telemetry is{' '}
+                <strong>{AM.executionTelemetry.toUpperCase()}</strong>.
+              </p>
+            </div>
+            <div className="card" style={{ background: 'var(--surface-2)' }} id="s2-engine">
+              <h3>Run the risk engine on Account A</h3>
+              <label className="field">
+                Evaluate as of day <strong style={{ color: 'var(--ink)' }}>{evalDay}</strong>
+                <input className="range" type="range" min={0} max={75} value={evalDay} onChange={(e) => setEvalDay(+e.target.value)} aria-label="Evaluation day" />
+              </label>
+              <div className="row-wrap" style={{ marginTop: 10 }}>
+                <button className="btn primary" onClick={() => setRun(scoreWorkspace(accountASnapshot(evalDay)))} data-testid="run-engine-a">
+                  Run risk engine
+                </button>
+                <span className="tiny muted">Grace {RULES.graceDays.SSF}d · stall {RULES.stallDays}d · freshness {RULES.freshnessWindowHours}h</span>
+                <Prov kind="proposed" />
+              </div>
+              {run && run.asOfDay !== evalDay && <p className="tiny" style={{ color: 'var(--watch)', marginTop: 8 }}>Result below is for day {run.asOfDay}. Run again for day {evalDay}.</p>}
+              {run && (
+                <div style={{ marginTop: 12 }}>
+                  <RiskResultCard r={run} />
+                  {run.state === 'UNKNOWN' && (
+                    <div className="row-wrap" style={{ marginTop: 10 }}>
+                      <button
+                        className="btn"
+                        disabled={dqOpen}
+                        onClick={() =>
+                          openDq({
+                            workspaceId: 'ACCOUNT-A',
+                            source: 'section-2',
+                            reason: `Execution telemetry missing${run.reasons.includes('EDIT_RECENCY_PROXY_LOW_CONFIDENCE') ? '; day-33 edit-recency candidate needs human review' : ''}`,
+                          })
+                        }
+                      >
+                        {dqOpen ? '✓ In Signal Desk · Data quality' : 'Send to Signal Desk · Data quality'}
+                      </button>
+                      <span className="tiny muted">Opens a data-quality case only. It never creates customer outreach.</span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </>
+      ) : (
+        <Callout tone="warn" title={`No raw events for Account ${acct}.`}>
+          The brief describes Account {acct} only in prose, so the engine can't be run on it, and the app doesn't invent events. The illustrative read from my answer is shown in Q2
+          below.
+        </Callout>
+      )}
     </Card>
   );
 }
 
-const ACCOUNTS = [
+const ANSWER_READS = [
   {
     id: 'A',
     motion: 'SSF',
@@ -218,13 +430,15 @@ export default function S2Leak() {
         }
       />
 
-      <Timeline />
+      <div id="s2-explorer">
+        <AccountExplorer />
+      </div>
 
       <div className="grid c4" style={{ margin: '16px 0 28px' }}>
-        <Stat label="Activation lag" value="3 days" note="campaign_sent first_campaign=true" />
-        <Stat label="Last workflow edit" value="Day 19" note="52 days before cancellation" />
-        <Stat label="Last AI trigger" value="Day 12" note="6 runs total · 59 days before" />
-        <Stat label="Sent / week" value="90.2" note="Range 88–93 across 10 weeks" />
+        <Stat label="Activation lag" value={`${AM.activationDay} days`} note="campaign_sent first_campaign=true" />
+        <Stat label="Last workflow edit" value={`Day ${AM.lastWorkflowEditDay}`} note={`${AM.daysFromLastEditToCancel} days before cancellation`} />
+        <Stat label="Last AI trigger" value={`Day ${AM.lastAiTriggerDay}`} note={`${AM.aiRunsObserved} runs total · ${AM.daysFromLastAiToCancel} days before`} />
+        <Stat label="Sent / week" value={AM.avgSent.toFixed(1)} note={`Range ${AM.minSent}–${AM.maxSent} across ${AM.weeklySent.length} weeks`} />
       </div>
 
       <BlockTitle>Questions</BlockTitle>
@@ -331,7 +545,7 @@ export default function S2Leak() {
         </Callout>
         <Card title="Checking the logic against the five accounts">
           <div className="grid c3" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))' }}>
-            {ACCOUNTS.map((a) => (
+            {ANSWER_READS.map((a) => (
               <div key={a.id} className="card" style={{ padding: 16, background: 'var(--surface-2)' }}>
                 <div className="row-wrap" style={{ justifyContent: 'space-between', marginBottom: 8 }}>
                   <strong style={{ fontSize: 18 }}>Account {a.id}</strong>

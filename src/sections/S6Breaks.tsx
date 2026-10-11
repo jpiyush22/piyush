@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import IncidentSimulator from './IncidentSimulator';
 import { Answer, Callout, Card, DataTable, KV, Pill, QA, SectionHero, Stat } from '../components/ui';
 
 function DriftSimulator() {
@@ -122,6 +123,9 @@ export default function S6Breaks() {
         }
       />
 
+      <div id="s6-sim" />
+      <IncidentSimulator />
+      <div style={{ height: 16 }} />
       <DriftSimulator />
       <div style={{ height: 28 }} />
 

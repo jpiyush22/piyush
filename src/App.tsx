@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { BrandMark, Icon } from './components/ui';
+import Walkthrough from './components/Walkthrough';
 import { SECTIONS, type SectionId } from './sections/registry';
 import Overview from './sections/Overview';
 import S1Funnel from './sections/S1Funnel';
@@ -20,6 +21,13 @@ export default function App() {
   const [current, setCurrent] = useState<SectionId>(readHash);
   const [navOpen, setNavOpen] = useState(false);
   const [query, setQuery] = useState('');
+  const [demoStep, setDemoStep] = useState<number | null>(null);
+
+  useEffect(() => {
+    const start = () => setDemoStep(0);
+    window.addEventListener('start-walkthrough', start);
+    return () => window.removeEventListener('start-walkthrough', start);
+  }, []);
 
   useEffect(() => {
     const onHash = () => {
@@ -147,6 +155,9 @@ export default function App() {
               </div>
             </div>
           </div>
+          <button className="btn sm" onClick={() => setDemoStep(demoStep == null ? 0 : null)} data-testid="guided-demo">
+            <Icon name="video" size={16} /> {demoStep == null ? 'Guided demo' : 'Exit demo'}
+          </button>
           {next && (
             <button className="btn sm primary" onClick={() => go(next.id)}>
               Next <Icon name="arrowR" size={16} />
@@ -176,6 +187,7 @@ export default function App() {
           </p>
         </div>
       </main>
+      {demoStep != null && <Walkthrough step={demoStep} onStep={setDemoStep} onClose={() => setDemoStep(null)} current={current} />}
     </div>
   );
 }

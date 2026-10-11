@@ -283,3 +283,24 @@ export function SectionHero({
 
 export const pct = (n: number, d: number, digits = 1) => `${((n / d) * 100).toFixed(digits)}%`;
 export const fmt = (n: number) => n.toLocaleString('en-US');
+
+/* ───────────── Provenance ───────────── */
+
+export type Provenance = 'case-study' | 'derived' | 'proposed' | 'synthetic' | 'simulated';
+
+const PROV: Record<Provenance, { label: string; title: string }> = {
+  'case-study': { label: 'Case-study data', title: 'Figures or records supplied in the Superchat brief (illustrative team estimates).' },
+  derived: { label: 'Derived', title: 'Calculated in this app from the case-study data.' },
+  proposed: { label: 'Proposed', title: 'A proposed threshold, target or design choice. Not a measured Superchat result.' },
+  synthetic: { label: 'Synthetic demo data', title: 'Generated for the demo. Not Superchat customers.' },
+  simulated: { label: 'Simulated · dry-run', title: 'No production system is called. Integrations are simulated in the browser.' },
+};
+
+export function Prov({ kind }: { kind: Provenance }) {
+  const p = PROV[kind];
+  return (
+    <span className={`prov prov-${kind}`} title={p.title}>
+      {p.label}
+    </span>
+  );
+}

@@ -1,4 +1,5 @@
-import { Answer, Callout, Card, DataTable, KV, Pill, QA, SectionHero } from '../components/ui';
+import { Answer, Callout, Card, DataTable, KV, Pill, Prov, QA, SectionHero } from '../components/ui';
+import { FUNNEL, METRICS as M, pct1 } from '../domain/funnel';
 
 const ROADMAP = [
   { label: 'Validate both problems', from: 1, to: 2, color: 'var(--navy)', text: 'Baseline + lead audit' },
@@ -59,7 +60,7 @@ export default function S3FirstWeek() {
         <Answer>
           <p>
             The clearest problem in the data is after onboarding: <strong>536 of 960 accounts (55.8%)</strong> don't reach Adoption. SSF accounts have a particularly low adoption rate
-            of <strong>41.0%</strong>, and they never go through Sales. Improving sales qualification alone won't fix that.
+            of <strong>{pct1(M.ssf.adoption.rate)}</strong>, and they never go through Sales. Improving sales qualification alone won't fix that.
           </p>
           <p>
             The Head of Sales says reps spend half their day screening poor-quality leads. That's an unverified claim, not a measured result, but I'd take it seriously and review lead
@@ -70,12 +71,12 @@ export default function S3FirstWeek() {
           head={['Metric', 'Value', 'Why it matters']}
           num={[1]}
           rows={[
-            ['Onboarded accounts', '960', 'Combined cohort'],
-            ['Accounts not reaching Adoption', '536', 'Largest absolute loss after onboarding'],
-            ['SSF Adoption rate', '41.0%', 'SSF has no Sales stage; fixing rep qualification cannot directly fix this path'],
-            ['Sales-led Adoption rate', '55.1%', "Higher than SSF; doesn't prove support causes the difference"],
-            ['SSF share of non-adopters', '81.9%', 'Most of the count comes from self-signup'],
-            ['LeadGen → LeadDev', 'SSF 72.0% · Sales-led 71.4%', 'Comparable top-of-funnel conversion, not a lead-quality measure'],
+            ['Onboarded accounts', String(FUNNEL.blended.Onboarding), 'Combined cohort'],
+            ['Accounts not reaching Adoption', String(M.blended.nonAdopters), 'Largest absolute loss after onboarding'],
+            ['SSF Adoption rate', pct1(M.ssf.adoption.rate), 'SSF has no Sales stage; fixing rep qualification cannot directly fix this path'],
+            ['Sales-led Adoption rate', pct1(M.sales.adoption.rate), "Higher than SSF; doesn't prove support causes the difference"],
+            ['SSF share of non-adopters', pct1(M.ssfShareOfNonAdopters), 'Most of the count comes from self-signup'],
+            ['LeadGen → LeadDev', `SSF ${pct1(M.ssf.leadDev.rate)} · Sales-led ${pct1(M.sales.leadDev.rate)}`, 'Comparable top-of-funnel conversion, not a lead-quality measure'],
           ]}
         />
         <Card title="How I'd handle the Sales concern">
@@ -126,10 +127,23 @@ export default function S3FirstWeek() {
             ['4', 'Weeks 10–12', 'Fix proven qualification issues', 'Targeted routing / dedupe / source-quality fix, not a CRM rebuild', 'Minutes saved per lead; qualified-to-outcome performance'],
           ]}
         />
+        <div id="s3-evidence" />
+        <Card title="Evidence-backed priorities vs proposed experiments">
+          <DataTable
+            head={['Workstream', 'Basis', 'What it rests on']}
+            rows={[
+              ['Adoption and early-churn investigation', <Prov kind="case-study" />, `${M.blended.nonAdopters} of ${FUNNEL.blended.Onboarding} onboarded accounts don't reach Adoption; SSF ${pct1(M.ssf.adoption.rate)} vs ${pct1(M.sales.adoption.rate)}.`],
+              ['Instrumentation (workflow / AI execution events)', <Prov kind="case-study" />, 'The Account A extract has no execution events, so depth usage cannot be verified.'],
+              ['CRM association reliability', <Prov kind="case-study" />, 'The brief: associations arrive unlinked, have retry/fallback workflows, and Workspace → Company is inconsistently populated.'],
+              ['Lead-quality and routing audit', <Pill tone="watch">Claim to verify</Pill>, '"Half their day triaging" is the Head of Sales\' estimate. Not measured yet; the audit measures it.'],
+              ['Safe automation + measurement', <Prov kind="proposed" />, `SSF adoption ${pct1(M.ssf.adoption.rate)} → ~${Math.round(M.proposedSsfAdoptionTarget * 100)}% is an experiment target, measured against a holdout. No impact or ROI is claimed.`],
+            ]}
+          />
+        </Card>
         <div className="grid c2">
           <Answer label="Why qualification comes later">
             <p>
-              Our clearest measured leak is after onboarding: 536 of 960 accounts (55.8%) do not reach Adoption, and SSF adoption is only 41.0%. Better Sales qualification would not
+              Our clearest measured leak is after onboarding: {M.blended.nonAdopters} of {FUNNEL.blended.Onboarding} accounts ({pct1(M.blended.nonAdoptionRate)}) do not reach Adoption, and SSF adoption is only {pct1(M.ssf.adoption.rate)}. Better Sales qualification would not
               directly fix the SSF journey. The Head of Sales may be right about wasted time, but we need to quantify it first.
             </p>
           </Answer>
@@ -201,8 +215,8 @@ export default function S3FirstWeek() {
         </div>
         <KV
           items={[
-            ['Onboarding → Adoption', '44.2% blended: the biggest absolute leak.'],
-            ['SSF Onboarding → Adoption', "41.0%: improving Sales qualification can't directly fix the self-signup journey."],
+            ['Onboarding → Adoption', `${pct1(M.blended.adoption.rate)} blended: the biggest absolute leak.`],
+            ['SSF Onboarding → Adoption', `${pct1(M.ssf.adoption.rate)}: improving Sales qualification can't directly fix the self-signup journey.`],
             ['Sales triage time claim', 'Unverified (Head of Sales estimate). Measure the time cost before committing to a rebuild.'],
           ]}
         />

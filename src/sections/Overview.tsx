@@ -1,4 +1,5 @@
 import { Icon, Pill, Stat } from '../components/ui';
+import { FUNNEL, METRICS as M, pct1 } from '../domain/funnel';
 import { SECTIONS, type SectionId } from './registry';
 
 export default function Overview({ go }: { go: (id: SectionId) => void }) {
@@ -10,7 +11,7 @@ export default function Overview({ go }: { go: (id: SectionId) => void }) {
           The leak isn't lead quality. It's <span className="grad">self-signup adoption.</span>
         </h1>
         <p>
-          536 of 960 onboarded accounts never reach Adoption, and 439 of them are self-signup. This is my full answer to the Superchat brief: the diagnosis, the early-warning system,
+          {M.blended.nonAdopters} of {FUNNEL.blended.Onboarding} onboarded accounts never reach Adoption, and {M.ssf.nonAdopters} of them are self-signup. This is my full answer to the Superchat brief: the diagnosis, the early-warning system,
           the CRM model, the failure drill and a working prototype of the tool that sits on top.
         </p>
         <div className="row-wrap">
@@ -26,7 +27,7 @@ export default function Overview({ go }: { go: (id: SectionId) => void }) {
         </div>
         <div className="hero-chat" aria-hidden="true">
           <div className="b in">Hey 👋 Where's the biggest problem in this funnel, and how confident are you?</div>
-          <div className="b out">Onboarding → Adoption. SSF converts 41.0% vs 55.1% Sales-led: a 14.1 pp gap, and 81.9% of all non-adopters.</div>
+          <div className="b out">Onboarding → Adoption. SSF converts {pct1(M.ssf.adoption.rate)} vs {pct1(M.sales.adoption.rate)} Sales-led: a {M.adoptionGapPp.toFixed(1)} pp gap, and {pct1(M.ssfShareOfNonAdopters)} of all non-adopters.</div>
           <div className="b in">And what would you build first?</div>
           <div className="b out">A daily, explainable Workspace risk signal, with one safe, human-approved action. I can ship it alone in two weeks.</div>
         </div>
@@ -40,12 +41,12 @@ export default function Overview({ go }: { go: (id: SectionId) => void }) {
           <div className="eyebrow">Key finding</div>
           <h3 style={{ fontSize: 24, margin: '8px 0 6px' }}>Onboarding → Adoption is where accounts stall</h3>
           <p className="small" style={{ color: 'var(--ink-2)' }}>
-            Same top of funnel for both motions (≈72% LeadGen → LeadDev). The gap opens after onboarding.
+            Same top of funnel for both motions (≈{Math.round(M.ssf.leadDev.rate * 100)}% LeadGen → LeadDev). The gap opens after onboarding.
           </p>
           <div className="compare">
             {[
-              ['SSF (self-signup)', 305, 744, 'var(--ssf)'],
-              ['Sales-led', 119, 216, 'var(--sales)'],
+              ['SSF (self-signup)', M.ssf.adoption.numerator, M.ssf.adoption.denominator, 'var(--ssf)'],
+              ['Sales-led', M.sales.adoption.numerator, M.sales.adoption.denominator, 'var(--sales)'],
             ].map(([l, n, d, c]) => (
               <div key={l as string}>
                 <div className="compare-head">
@@ -62,12 +63,12 @@ export default function Overview({ go }: { go: (id: SectionId) => void }) {
             ))}
           </div>
           <div className="row-wrap" style={{ marginTop: 16 }}>
-            <Pill tone="brand">−14.1 pp gap</Pill>
-            <Pill tone="outline">SSF = 439 of 536 non-adopters (81.9%)</Pill>
+            <Pill tone="brand">−{M.adoptionGapPp.toFixed(1)} pp gap</Pill>
+            <Pill tone="outline">SSF = {M.ssf.nonAdopters} of {M.blended.nonAdopters} non-adopters ({pct1(M.ssfShareOfNonAdopters)})</Pill>
           </div>
         </div>
-        <Stat label="Didn't reach adoption" value="55.8%" note="536 of 960 onboarded" accent />
-        <Stat label="Expansion of adopted" value="12.5 / 42.9%" note="SSF vs Sales-led, 90-day window" />
+        <Stat label="Didn't reach adoption" value={pct1(M.blended.nonAdoptionRate)} note={`${M.blended.nonAdopters} of ${FUNNEL.blended.Onboarding} onboarded`} accent />
+        <Stat label="Expansion of adopted" value={`${(M.ssf.expansion.rate * 100).toFixed(1)} / ${pct1(M.sales.expansion.rate)}`} note="SSF vs Sales-led, 90-day window" />
         <Stat label="Pilot target" value="+5 pp" note="SSF 41% → ~46%, a test target, not a forecast" />
         <Stat label="First slice" value="2 weeks" note="One engineer, existing stack" />
         {[

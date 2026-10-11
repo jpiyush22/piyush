@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import CrmExplorer from './CrmExplorer';
 import { Answer, BlockTitle, Callout, Card, DataTable, KV, Pill, QA, SectionHero, Stat } from '../components/ui';
 
 const RECORDS = [
@@ -169,6 +170,8 @@ const OBJS: Obj[] = [
   },
 ];
 
+const reduceMotion = typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
 const RELS: { a: string; b: string; label: string; card: string; dashed?: boolean; pts: [number, number][]; lx: number; ly: number }[] = [
   { a: 'parent', b: 'op', label: 'verified parent → child', card: '0..1 : many', dashed: true, pts: [[270, 55], [340, 55]], lx: 120, ly: 110 },
   { a: 'op', b: 'ws', label: 'operates', card: '1 : many (verified)', pts: [[470, 90], [470, 170]], lx: 478, ly: 128 },
@@ -225,8 +228,14 @@ function ERD() {
                 stroke={r.dashed ? '#94a3b8' : '#145fd9'}
                 strokeWidth={r.a === sel || r.b === sel ? 2.6 : 1.8}
                 strokeDasharray={r.dashed ? '5 4' : undefined}
+                className={r.dashed ? 'flow-anim flow-slow' : undefined}
                 markerEnd="url(#erd-ar)"
               />
+              {!reduceMotion && (
+                <circle r={r.a === sel || r.b === sel ? 4 : 3} fill={r.dashed ? '#94a3b8' : '#145fd9'} stroke="#fff" strokeWidth={1.2}>
+                  <animateMotion dur={`${2.6 + (i % 3) * 0.6}s`} begin={`${i * 0.3}s`} repeatCount="indefinite" path={r.pts.map((p, j) => `${j ? 'L' : 'M'}${p[0]} ${p[1]}`).join(' ')} />
+                </circle>
+              )}
             </g>
           ))}
           {OBJS.map((b) => (
@@ -307,6 +316,9 @@ export default function S5DataModel() {
         <Stat label="Same legal customer?" value="UNKNOWN" note="Names + domains prove nothing" accent />
       </div>
 
+      <div id="s5-explorer" />
+      <CrmExplorer />
+      <div style={{ height: 28 }} />
       <BlockTitle>Questions</BlockTitle>
 
       <QA

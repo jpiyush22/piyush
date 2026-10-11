@@ -18,14 +18,45 @@ export default function S7Tool() {
       />
 
       <Callout title="Try it.">
-        Pick a workspace, confirm the risk, then approve the action. Click the action twice to watch the action key suppress the duplicate. Try WS-1135 (opted out) and WS-1188
-        (cancelled yesterday) to see the live eligibility check block dispatch. A false positive needs a reason; a snooze needs a reason and an expiry.
+        Open <strong>WS-0881</strong> (Sales-led, eligible), confirm the risk, save, then <em>Create CSx task</em>. Click it again, or fire three concurrent requests, and the action key
+        blocks the duplicates. Try <strong>WS-1135</strong> (opted out) and <strong>WS-1188</strong> (cached as active, cancelled on the live Chargebee check): dispatch is suppressed and
+        logged. Set <em>Next delivery</em> to "times out" to see an uncertain outcome held as pending until reconciled. A false positive needs a reason; a snooze needs a reason and an
+        expiry.
       </Callout>
       <div style={{ height: 14 }} />
       <SignalDesk />
       <p className="tiny muted" style={{ marginTop: 8 }}>
-        All accounts, timestamps, quantities and metrics in the prototype are mock data. It does not represent a live Superchat instance.
+        Every workspace in the desk is synthetic. Its state is computed by the Section 4 engine (<code>v0.3-exec</code>), not typed in. Integrations are dry-run adapters with no
+        network access.
       </p>
+
+      <div style={{ height: 20 }} />
+      <div className="grid c2">
+        <div className="card">
+          <div className="row-wrap" style={{ justifyContent: 'space-between' }}>
+            <h3 style={{ margin: 0 }}>Two-week solo MVP</h3>
+            <Pill tone="ok">What I'd actually ship first</Pill>
+          </div>
+          <ul className="small" style={{ paddingLeft: 18, marginBottom: 0 }}>
+            <li>HubSpot saved views: Needs review + UNKNOWN / data quality</li>
+            <li>Reviewer fields (status, reason, reviewer, snooze-until) kept separate from the model score</li>
+            <li>One supervised, serialized Make/n8n dispatch with live checks and a logged action key</li>
+            <li>Small pilot (one CSx, Lifecycle, RevOps) and a basic Metabase outcomes view</li>
+          </ul>
+        </div>
+        <div className="card">
+          <div className="row-wrap" style={{ justifyContent: 'space-between' }}>
+            <h3 style={{ margin: 0 }}>Mature system (this prototype's shape)</h3>
+            <Pill tone="outline">Only if the day-90 gates hold</Pill>
+          </div>
+          <ul className="small" style={{ paddingLeft: 18, marginBottom: 0 }}>
+            <li>Dedicated review interface with queue separation and an evidence explorer</li>
+            <li>Durable Postgres action ledger with <code>UNIQUE(action_key)</code> for concurrent dispatch</li>
+            <li>Outcome analytics with holdouts; reviewer-correction feedback into rule changes</li>
+            <li>Not deliverable to production by one person in two weeks. The prototype demonstrates the design, not a production build.</li>
+          </ul>
+        </div>
+      </div>
 
       <div style={{ height: 28 }} />
       <BlockTitle>The end state</BlockTitle>

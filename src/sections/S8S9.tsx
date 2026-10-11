@@ -59,6 +59,38 @@ export function S8Video() {
         )}
       </Card>
       <div style={{ height: 16 }} />
+      <Card title="Optional in-app demo (not a substitute for the video)" right={<button className="btn primary sm" onClick={() => window.dispatchEvent(new Event('start-walkthrough'))} data-testid="start-demo">Start guided demo</button>}>
+        <p className="small">
+          A 9-step tour (about 3–5 minutes) through the funnel maths, Account A's events, the risk engine, the CRM explorer, the drift incident and the Signal Desk. The required 1–3 minute
+          Section 8 video is recorded separately.
+        </p>
+      </Card>
+      <div style={{ height: 16 }} />
+      <div id="s8-assumptions" />
+      <Card title="Assumptions and unresolved questions">
+        <div className="grid c2">
+          <div>
+            <h3 style={{ fontSize: 16 }}>What I assumed</h3>
+            <ul className="small" style={{ paddingLeft: 18 }}>
+              <li>Funnel counts are accounts reaching each stage within 90 days (team estimates, one monthly cohort).</li>
+              <li>Product events record configuration (created/edited/triggered), not successful execution.</li>
+              <li>Each Workspace has its own CB Subscription, per the brief; shared contacts or domains prove nothing about ownership or payer.</li>
+              <li>Thresholds (14-day stall, 26h freshness, 14-day cooldown, 2× / 1.5× drift) are proposals to calibrate, not benchmarks.</li>
+            </ul>
+          </div>
+          <div>
+            <h3 style={{ fontSize: 16 }}>What I'd check with access</h3>
+            <ul className="small" style={{ paddingLeft: 18 }}>
+              <li>Whether workflow/AI execution events exist anywhere, and whether AI-agent events after day 12 are complete.</li>
+              <li>HubSpot association workflow branches, retry logs and custom association labels.</li>
+              <li>Chargebee customer IDs and the real Beauty Lounge contract and payer hierarchy.</li>
+              <li>Actual rep triage time and lead-source outcomes behind the Head of Sales' estimate.</li>
+              <li>Engineering deployment/migration metadata and actor/origin on workflow_edited.</li>
+            </ul>
+          </div>
+        </div>
+      </Card>
+      <div style={{ height: 16 }} />
       <Card title="Where the thinking went (from the written answers)">
         <div className="steps">
           {[

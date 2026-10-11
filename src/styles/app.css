@@ -77,7 +77,8 @@ button {
 .app {
   display: grid;
   grid-template-columns: 72px 288px minmax(0, 1fr);
-  height: 100%;
+  min-height: 100%;
+  align-items: start;
 }
 
 .rail {
@@ -1575,4 +1576,39 @@ details.more > div {
   .bento-third {
     grid-column: span 6;
   }
+}
+
+/* Profile photo */
+.who,
+.rail-avatar {
+  overflow: hidden;
+}
+.who img,
+.rail-avatar img,
+.nav-profile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+.nav-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+.nav-profile img {
+  width: 36px;
+  height: 36px;
+  flex: none;
+}
+.nav-profile-name {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--heading);
+  line-height: 1.3;
+}
+.nav-profile .nav-sub {
+  margin-top: 0;
 }

@@ -38,7 +38,7 @@ export default function S3FirstWeek() {
           </div>
         </div>
         <div className="msg out">
-          <div className="who">PJ</div>
+          <div className="who"><img src="piyush.jpg" alt="Piyush Jain" /></div>
           <div className="bubble">
             <div className="meta">Piyush</div>I understand the frustration. If your reps are spending half their day sorting through poor-quality leads, we need to address that. I'd like
             to review actual leads with your team first to understand whether the problem is lead quality, routing, duplicates or missing information. I'll own that investigation and

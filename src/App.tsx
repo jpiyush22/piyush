@@ -76,7 +76,7 @@ export default function App() {
         ))}
         <div className="rail-spacer" />
         <div className="rail-avatar" title="Piyush Jain">
-          PJ
+          <img src="piyush.jpg" alt="Piyush Jain" />
         </div>
       </aside>
 
@@ -86,7 +86,13 @@ export default function App() {
         <div className="nav-head">
           <BrandLogo className="nav-logo" />
           <div className="nav-title">RevOps take-home</div>
-          <div className="nav-sub">Piyush Jain · RevOps Engineer candidate</div>
+          <div className="nav-profile">
+            <img src="piyush.jpg" alt="Piyush Jain" />
+            <div>
+              <div className="nav-profile-name">Piyush Jain</div>
+              <div className="nav-sub">RevOps Engineer candidate</div>
+            </div>
+          </div>
           <label className="nav-search">
             <Icon name="search" size={16} />
             <input placeholder="Search sections" value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Search sections" />

@@ -235,7 +235,7 @@ export function QA({ num, question, summary, children }: { num: string; question
         </div>
         {summary && (
           <div className="msg out">
-            <div className="who">PJ</div>
+            <div className="who"><img src="piyush.jpg" alt="Piyush Jain" /></div>
             <div className="bubble">
               <div className="meta">Piyush · short answer</div>
               {summary}
@@ -252,7 +252,7 @@ export function Answer({ children, label = 'Full answer' }: { children: ReactNod
   return (
     <div className="answer">
       <div className="answer-head">
-        <span className="who">PJ</span>
+        <span className="who"><img src="piyush.jpg" alt="Piyush Jain" /></span>
         <span className="name">{label}</span>
       </div>
       {children}
